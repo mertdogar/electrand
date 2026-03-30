@@ -1,3 +1,3 @@
-import { exposeStoreApi } from '../lib/store/preload';
+import { exposeStoreApi } from '@lib/store/preload';
 
 exposeStoreApi();

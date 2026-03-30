@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { createStoreHook } from '../lib/store/renderer';
+import { createStoreHook } from '@lib/store/renderer';
 import { demoStore, type Project } from './stores/demo';
+import { Button } from '@/components/ui/button';
 
 const useDemo = createStoreHook(demoStore);
 
@@ -109,6 +110,9 @@ export default function App() {
     <div className={`app ${theme}`} style={{ fontSize }}>
       <h1>Electrand Store Demo</h1>
 
+<Button variant="outline" onClick={() => alert('This is a button!')}>
+        Click me
+      </Button>
       <section>
         <h2>Preferences</h2>
         <div className="controls">

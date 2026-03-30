@@ -1,4 +1,4 @@
-import { defineStore } from '../../lib/store/types';
+import { defineStore } from '@lib/store/types';
 
 export interface Project {
   id: string;
