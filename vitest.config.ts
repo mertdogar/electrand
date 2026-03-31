@@ -1,6 +1,7 @@
 import path from "path"
 import { defineConfig } from "vitest/config"
 
+
 export default defineConfig({
   test: {
     environment: "node",
@@ -8,6 +9,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      "@": path.resolve(__dirname, "./src/renderer"),
       "@shared": path.resolve(__dirname, "./src/shared"),
       "@main": path.resolve(__dirname, "./src/main"),
     },
