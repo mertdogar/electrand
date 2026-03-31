@@ -37,7 +37,9 @@ const createWindow = (): BrowserWindow => {
     )
   }
 
-  mainWindow.webContents.openDevTools()
+  if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+    mainWindow.webContents.openDevTools()
+  }
   return mainWindow
 }
 
@@ -69,7 +71,7 @@ app.on("ready", () => {
   // 7. Register all IPC handlers
   registerPreferencesHandlers(db, defaults)
   registerProjectsHandlers(() => getPreferences(db, defaults).appMainDirectory)
-  registerAppStateHandlers(db)
+  registerAppStateHandlers(db, () => getPreferences(db, defaults).appMainDirectory)
   registerAppInfoHandlers()
 
   // 8. Create the window

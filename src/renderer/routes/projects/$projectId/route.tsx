@@ -5,16 +5,16 @@ import { useProjects } from "@/hooks/use-projects"
 
 function ProjectLayout(): React.ReactElement {
   const { projectId } = useParams({ from: "/projects/$projectId" })
-  const setAppState = useSetAppState()
+  const { mutate: setAppStateMutate } = useSetAppState()
   const { data: projects } = useProjects()
   const project = projects?.find((p) => p.id === projectId)
 
   useEffect(() => {
-    setAppState.mutate(
+    setAppStateMutate(
       { projectId },
       { onError: (err) => console.error("Failed to set active project:", err) }
     )
-  }, [projectId, setAppState])
+  }, [projectId, setAppStateMutate])
 
   if (!project) {
     return <p className="text-sm text-muted-foreground">Project not found.</p>
