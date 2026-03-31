@@ -8,6 +8,7 @@ import { registerPreferencesHandlers } from "./handlers/preferences"
 import { registerProjectsHandlers } from "./handlers/projects"
 import { registerAppStateHandlers } from "./handlers/appState"
 import { registerAppInfoHandlers } from "./handlers/appInfo"
+import { registerWindowHandlers } from "./handlers/window"
 import type { Preferences } from "@shared/schemas"
 
 if (started) app.quit()
@@ -31,6 +32,9 @@ const createWindow = (): BrowserWindow => {
     width: 1200,
     height: 800,
     icon: path.join(__dirname, "../../resources/icon.png"),
+    frame: false,
+    titleBarStyle: "hiddenInset",
+    trafficLightPosition: { x: 12, y: 12 },
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
@@ -80,7 +84,8 @@ app.on("ready", () => {
   registerAppInfoHandlers()
 
   // 8. Create the window
-  createWindow()
+  const mainWindow = createWindow()
+  registerWindowHandlers(mainWindow)
 })
 
 app.on("window-all-closed", () => {

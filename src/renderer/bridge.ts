@@ -10,6 +10,9 @@ export interface InvokePayloads {
   "app:appState:get": void
   "app:appState:set": Partial<AppState>
   "app:info:get": void
+  "app:window:minimize": void
+  "app:window:maximize-toggle": void
+  "app:window:close": void
 }
 
 export interface InvokeReturns {
@@ -22,6 +25,9 @@ export interface InvokeReturns {
   "app:appState:get": AppState
   "app:appState:set": AppState
   "app:info:get": AppInfo
+  "app:window:minimize": void
+  "app:window:maximize-toggle": void
+  "app:window:close": void
 }
 
 export interface PushPayloads {
