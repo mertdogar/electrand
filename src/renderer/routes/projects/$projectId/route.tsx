@@ -22,4 +22,5 @@ function ProjectLayout(): React.ReactElement {
 
 export const Route = createFileRoute("/projects/$projectId")({
   component: ProjectLayout,
+  staticData: {},
 })

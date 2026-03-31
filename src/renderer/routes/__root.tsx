@@ -36,4 +36,5 @@ function RootLayout(): React.ReactElement {
 
 export const Route = createRootRoute({
   component: RootLayout,
+  staticData: {},
 })
