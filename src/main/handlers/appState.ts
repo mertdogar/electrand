@@ -4,29 +4,20 @@ import { AppStateSchema, type AppState } from "@shared/schemas"
 import { getAppState, setAppState } from "@main/db"
 import { readProject, writeProject } from "@main/projects"
 
-export function handleGetAppState(
-  db: Database.Database,
-  pid: number
-): AppState {
+export function handleGetAppState(db: Database.Database, pid: number): AppState {
   return getAppState(db, pid)
 }
 
-export function handleSetAppState(
-  db: Database.Database,
-  pid: number,
-  partial: unknown
-): AppState {
+export function handleSetAppState(db: Database.Database, pid: number, partial: unknown): AppState {
   const validated = AppStateSchema.partial().parse(partial)
   return setAppState(db, pid, validated)
 }
 
 export function registerAppStateHandlers(
   db: Database.Database,
-  getAppMainDirectory: () => string
+  getAppMainDirectory: () => string,
 ): void {
-  ipcMain.handle("app:appState:get", () =>
-    handleGetAppState(db, process.pid)
-  )
+  ipcMain.handle("app:appState:get", () => handleGetAppState(db, process.pid))
   ipcMain.handle("app:appState:set", (event, partial: unknown) => {
     const next = handleSetAppState(db, process.pid, partial)
     // Update lastOpenedAt when a project is opened

@@ -3,6 +3,7 @@
 ## Overview
 
 Two improvements to Electrand's UI:
+
 1. **Form & card restyling** — replace amateur-looking bordered forms/cards with a cohesive elevated/shadow style
 2. **Command palette** — full-power `Cmd+K` palette using `cmdk` (already installed) for navigation, project actions, and settings
 
@@ -15,6 +16,7 @@ Current forms use plain HTML `<input>` elements with harsh `border` classes (`ro
 ### Solution: Elevated/Floating Style
 
 **Input treatment**: Replace raw `<input>` tags with the shadcn `Input` component. Override its default border-heavy style with a softer elevated look:
+
 - Remove the hard `border-input` border
 - Add `shadow-sm` for subtle elevation
 - Use a very faint border (`border-border/40`) so it doesn't disappear entirely
@@ -23,6 +25,7 @@ Current forms use plain HTML `<input>` elements with harsh `border` classes (`ro
 Apply this by updating the `Input` component's base classes in `src/renderer/components/ui/input.tsx` so all inputs get the treatment automatically.
 
 New Input base classes:
+
 ```
 border-border/40 bg-card shadow-sm
 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50
@@ -30,12 +33,12 @@ focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50
 
 ### Files changed
 
-| File | Change |
-|------|--------|
-| `src/renderer/components/ui/input.tsx` | Update base classes: softer border, shadow-sm, bg-card |
-| `src/renderer/routes/index.tsx` | Replace raw `<input>` with shadcn `Input` component. Add `hover:shadow-md transition-shadow` to `ProjectCard`. |
-| `src/renderer/routes/projects/$projectId/settings.tsx` | Replace raw `<input>` with shadcn `Input`. Wrap danger zone in shadcn `Card` with destructive accent. |
-| `src/renderer/routes/preferences.tsx` | Replace inline `rounded-md border` wrappers with shadcn `Card` for each settings row. |
+| File                                                   | Change                                                                                                         |
+| ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| `src/renderer/components/ui/input.tsx`                 | Update base classes: softer border, shadow-sm, bg-card                                                         |
+| `src/renderer/routes/index.tsx`                        | Replace raw `<input>` with shadcn `Input` component. Add `hover:shadow-md transition-shadow` to `ProjectCard`. |
+| `src/renderer/routes/projects/$projectId/settings.tsx` | Replace raw `<input>` with shadcn `Input`. Wrap danger zone in shadcn `Card` with destructive accent.          |
+| `src/renderer/routes/preferences.tsx`                  | Replace inline `rounded-md border` wrappers with shadcn `Card` for each settings row.                          |
 
 ### Card treatment
 
@@ -46,6 +49,7 @@ The shadcn `Card` component already uses `shadow-sm` which aligns with the eleva
 ### Architecture
 
 A single `CommandPalette` component rendered in the root layout (`__root.tsx`), using:
+
 - `cmdk` (already installed as dependency)
 - shadcn `Command` component (needs to be added via `npx shadcn@latest add command`)
 - shadcn `Dialog` for the overlay container
@@ -79,14 +83,14 @@ A single `CommandPalette` component rendered in the root layout (`__root.tsx`), 
 
 ### New files
 
-| File | Purpose |
-|------|---------|
+| File                                          | Purpose                                      |
+| --------------------------------------------- | -------------------------------------------- |
 | `src/renderer/components/command-palette.tsx` | `CommandPalette` component with all sections |
 
 ### Modified files
 
-| File | Change |
-|------|--------|
+| File                             | Change                                                                                |
+| -------------------------------- | ------------------------------------------------------------------------------------- |
 | `src/renderer/routes/__root.tsx` | Import and render `<CommandPalette />` inside `SidebarProvider`, add `Cmd+K` listener |
 
 ### Component structure
@@ -104,7 +108,9 @@ A single `CommandPalette` component rendered in the root layout (`__root.tsx`), 
           <CommandItem>About</CommandItem>
         </CommandGroup>
         <CommandGroup heading="Projects">
-          {projects.map(p => <CommandItem>Open {p.name}</CommandItem>)}
+          {projects.map((p) => (
+            <CommandItem>Open {p.name}</CommandItem>
+          ))}
           <CommandItem>New Project</CommandItem>
         </CommandGroup>
         <CommandGroup heading="Settings">
@@ -121,6 +127,7 @@ A single `CommandPalette` component rendered in the root layout (`__root.tsx`), 
 ### Keyboard shortcut display
 
 Each command item shows its shortcut on the right side using `<CommandShortcut>`:
+
 - Home: `Cmd+H` (display only — not wired as actual shortcut)
 - Toggle Theme: no shortcut display
 

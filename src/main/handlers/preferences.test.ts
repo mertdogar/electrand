@@ -27,9 +27,7 @@ describe("handleSetPreferences", () => {
   })
 
   it("rejects invalid partial (throws ZodError)", () => {
-    expect(() =>
-      handleSetPreferences(db, DEFAULTS, { fontSize: 3 })
-    ).toThrow()
+    expect(() => handleSetPreferences(db, DEFAULTS, { fontSize: 3 })).toThrow()
   })
 
   it("rejects unknown keys gracefully by ignoring them", () => {

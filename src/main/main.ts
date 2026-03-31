@@ -10,16 +10,12 @@ import { registerAppStateHandlers } from "./handlers/appState"
 import { registerAppInfoHandlers } from "./handlers/appInfo"
 import type { Preferences } from "@shared/schemas"
 
-
-
-
 if (started) app.quit()
 
-
-if (process.env.NODE_ENV === 'development' || process.argv.includes('--dev')) {
-  const port = process.env.DEBUG_PORT || '9333';
-  app.commandLine.appendSwitch('remote-debugging-port', port);
-  console.log(`Remote debugging enabled on port ${port}`);
+if (process.env.NODE_ENV === "development" || process.argv.includes("--dev")) {
+  const port = process.env.DEBUG_PORT || "9333"
+  app.commandLine.appendSwitch("remote-debugging-port", port)
+  console.log(`Remote debugging enabled on port ${port}`)
 }
 
 function resolveDefaultPreferences(): Preferences {
@@ -39,19 +35,14 @@ const createWindow = (): BrowserWindow => {
     },
   })
 
-  
-
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL)
   } else {
-    mainWindow.loadFile(
-      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
-    )
+    mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`))
   }
 
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
-    
-    mainWindow.webContents.openDevTools({mode: 'detach'})
+    mainWindow.webContents.openDevTools({ mode: "detach" })
   }
   return mainWindow
 }

@@ -5,9 +5,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar"
 
 export function Topbar(): React.ReactElement {
   const matches = useRouterState({ select: (s) => s.matches })
-  const title = [...matches]
-    .reverse()
-    .find((m) => (m.staticData as { title?: string }).title)
+  const title = [...matches].reverse().find((m) => (m.staticData as { title?: string }).title)
   const label = (title?.staticData as { title?: string })?.title ?? ""
 
   return (

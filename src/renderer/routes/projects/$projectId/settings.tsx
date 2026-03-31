@@ -2,12 +2,7 @@ import React, { useState, useEffect } from "react"
 import { createFileRoute, useParams, useNavigate } from "@tanstack/react-router"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useProjects, useUpdateProject, useDeleteProject } from "@/hooks/use-projects"
 import { useSetAppState } from "@/hooks/use-app-state"
 import { PageContent, PageSection, PageTitle } from "@/components/ui/page"
@@ -45,7 +40,7 @@ function ProjectSettings(): React.ReactElement {
   const handleSave = (): void => {
     updateProject.mutate(
       { id: projectId, name, path: projectPath },
-      { onError: (err) => console.error("Failed to save project:", err) }
+      { onError: (err) => console.error("Failed to save project:", err) },
     )
   }
 
@@ -59,11 +54,11 @@ function ProjectSettings(): React.ReactElement {
             {
               onSuccess: () => void navigate({ to: "/" }),
               onError: (err) => console.error("Failed to clear active project:", err),
-            }
+            },
           )
         },
         onError: (err) => console.error("Failed to delete project:", err),
-      }
+      },
     )
   }
 
@@ -73,15 +68,15 @@ function ProjectSettings(): React.ReactElement {
 
       <PageSection title="General">
         <div className="flex flex-col gap-2">
-          <label htmlFor="project-name" className="text-sm text-muted-foreground">Name</label>
-          <Input
-            id="project-name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
+          <label htmlFor="project-name" className="text-sm text-muted-foreground">
+            Name
+          </label>
+          <Input id="project-name" value={name} onChange={(e) => setName(e.target.value)} />
         </div>
         <div className="flex flex-col gap-2">
-          <label htmlFor="project-path" className="text-sm text-muted-foreground">Path</label>
+          <label htmlFor="project-path" className="text-sm text-muted-foreground">
+            Path
+          </label>
           <Input
             id="project-path"
             value={projectPath}

@@ -22,9 +22,7 @@ export const Route = createFileRoute("/")({
 })
 
 function formatDate(iso: string): string {
-  return new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(
-    new Date(iso)
-  )
+  return new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(new Date(iso))
 }
 
 function formatRelative(iso: string | null): string {
@@ -61,19 +59,13 @@ function ProjectCard({
         </p>
       </CardContent>
       <CardFooter>
-        <p className="text-xs text-muted-foreground">
-          Created {formatDate(project.createdAt)}
-        </p>
+        <p className="text-xs text-muted-foreground">Created {formatDate(project.createdAt)}</p>
       </CardFooter>
     </Card>
   )
 }
 
-function NewProjectForm({
-  onCancel,
-}: {
-  onCancel: () => void
-}): React.ReactElement {
+function NewProjectForm({ onCancel }: { onCancel: () => void }): React.ReactElement {
   const [name, setName] = useState("")
   const [projectPath, setProjectPath] = useState("")
   const createProject = useCreateProject()
@@ -83,7 +75,7 @@ function NewProjectForm({
     if (!name.trim()) return
     createProject.mutate(
       { name: name.trim(), path: projectPath.trim() || `/projects/${name.trim().toLowerCase()}` },
-      { onSuccess: onCancel }
+      { onSuccess: onCancel },
     )
   }
 
@@ -131,7 +123,7 @@ function HomeScreen(): React.ReactElement {
       {
         onSuccess: () => void navigate({ to: "/projects/$projectId", params: { projectId: id } }),
         onError: (err) => console.error("Failed to open project:", err),
-      }
+      },
     )
   }
 

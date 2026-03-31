@@ -93,7 +93,7 @@ describe("cleanStaleAppState", () => {
     // Insert a row with a pid that definitely doesn't exist (pid 1 is init on Linux, use a huge number)
     db.prepare("INSERT INTO app_state (pid, data) VALUES (?, ?)").run(
       999999999,
-      JSON.stringify({ projectId: null })
+      JSON.stringify({ projectId: null }),
     )
     cleanStaleAppState(db)
     const row = db.prepare("SELECT * FROM app_state WHERE pid = ?").get(999999999)

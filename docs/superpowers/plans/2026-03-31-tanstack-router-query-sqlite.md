@@ -13,6 +13,7 @@
 ## File Map
 
 **Create:**
+
 - `src/shared/schemas.ts` — Zod schemas + inferred types (shared by main + renderer)
 - `src/shared/schemas.test.ts`
 - `src/main/db.ts` — SQLite open/migrations, typed CRUD for preferences + app_state
@@ -44,6 +45,7 @@
 - `vitest.config.ts`
 
 **Modify:**
+
 - `package.json` — add deps + `"test"` script
 - `tsconfig.json` — add `strict`, `@shared/*` path alias
 - `vite.renderer.config.mts` — add TanStack Router plugin + `@shared` alias
@@ -53,6 +55,7 @@
 - `src/main/main.ts` — rewrite boot sequence
 
 **Delete:**
+
 - `src/lib/store/main.ts`
 - `src/lib/store/renderer.ts`
 - `src/lib/store/preload.ts`
@@ -64,6 +67,7 @@
 ## Task 1: Install dependencies and configure toolchain
 
 **Files:**
+
 - Modify: `package.json`
 - Modify: `tsconfig.json`
 - Modify: `vite.renderer.config.mts`
@@ -217,6 +221,7 @@ git commit -m "feat: install tanstack router/query, better-sqlite3, zod; configu
 ## Task 2: Shared Zod schemas
 
 **Files:**
+
 - Create: `src/shared/schemas.ts`
 - Create: `src/shared/schemas.test.ts`
 
@@ -226,12 +231,7 @@ Create `src/shared/schemas.test.ts`:
 
 ```ts
 import { describe, it, expect } from "vitest"
-import {
-  ProjectSchema,
-  PreferencesSchema,
-  AppStateSchema,
-  AppInfoSchema,
-} from "./schemas"
+import { ProjectSchema, PreferencesSchema, AppStateSchema, AppInfoSchema } from "./schemas"
 
 describe("ProjectSchema", () => {
   it("parses a valid project", () => {
@@ -255,7 +255,7 @@ describe("ProjectSchema", () => {
         createdAt: "2026-01-01T00:00:00.000Z",
         updatedAt: "2026-01-01T00:00:00.000Z",
         lastOpenedAt: null,
-      })
+      }),
     ).toThrow()
   })
 
@@ -268,7 +268,7 @@ describe("ProjectSchema", () => {
         createdAt: "2026-01-01T00:00:00.000Z",
         updatedAt: "2026-01-01T00:00:00.000Z",
         lastOpenedAt: null,
-      })
+      }),
     ).toThrow()
   })
 })
@@ -281,13 +281,13 @@ describe("PreferencesSchema", () => {
 
   it("rejects invalid theme", () => {
     expect(() =>
-      PreferencesSchema.parse({ theme: "blue", fontSize: 14, appMainDirectory: "/tmp" })
+      PreferencesSchema.parse({ theme: "blue", fontSize: 14, appMainDirectory: "/tmp" }),
     ).toThrow()
   })
 
   it("rejects fontSize out of range", () => {
     expect(() =>
-      PreferencesSchema.parse({ theme: "dark", fontSize: 5, appMainDirectory: "/tmp" })
+      PreferencesSchema.parse({ theme: "dark", fontSize: 5, appMainDirectory: "/tmp" }),
     ).toThrow()
   })
 })
@@ -299,7 +299,7 @@ describe("AppStateSchema", () => {
 
   it("accepts valid uuid projectId", () => {
     expect(() =>
-      AppStateSchema.parse({ projectId: "123e4567-e89b-12d3-a456-426614174000" })
+      AppStateSchema.parse({ projectId: "123e4567-e89b-12d3-a456-426614174000" }),
     ).not.toThrow()
   })
 
@@ -376,6 +376,7 @@ git commit -m "feat: add shared Zod schemas (Project, Preferences, AppState, App
 ## Task 3: SQLite db module
 
 **Files:**
+
 - Create: `src/main/db.ts`
 - Create: `src/main/db.test.ts`
 
@@ -468,7 +469,7 @@ describe("cleanStaleAppState", () => {
     // Insert a row with a pid that definitely doesn't exist (pid 1 is init on Linux, use a huge number)
     db.prepare("INSERT INTO app_state (pid, data) VALUES (?, ?)").run(
       999999999,
-      JSON.stringify({ projectId: null })
+      JSON.stringify({ projectId: null }),
     )
     cleanStaleAppState(db)
     const row = db.prepare("SELECT * FROM app_state WHERE pid = ?").get(999999999)
@@ -489,12 +490,7 @@ Expected: FAIL — cannot find module `./db`.
 
 ```ts
 import Database from "better-sqlite3"
-import {
-  PreferencesSchema,
-  AppStateSchema,
-  type Preferences,
-  type AppState,
-} from "@shared/schemas"
+import { PreferencesSchema, AppStateSchema, type Preferences, type AppState } from "@shared/schemas"
 
 export function runMigrations(db: Database.Database): void {
   db.exec(`
@@ -509,10 +505,7 @@ export function runMigrations(db: Database.Database): void {
   `)
 }
 
-export function getPreferences(
-  db: Database.Database,
-  defaults: Preferences
-): Preferences {
+export function getPreferences(db: Database.Database, defaults: Preferences): Preferences {
   const row = db.prepare("SELECT data FROM preferences WHERE id = 1").get() as
     | { data: string }
     | undefined
@@ -523,12 +516,12 @@ export function getPreferences(
 export function setPreferences(
   db: Database.Database,
   defaults: Preferences,
-  partial: Partial<Preferences>
+  partial: Partial<Preferences>,
 ): Preferences {
   const current = getPreferences(db, defaults)
   const next = PreferencesSchema.parse({ ...current, ...partial })
   db.prepare(
-    "INSERT INTO preferences (id, data) VALUES (1, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data"
+    "INSERT INTO preferences (id, data) VALUES (1, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
   ).run(JSON.stringify(next))
   return next
 }
@@ -544,12 +537,12 @@ export function getAppState(db: Database.Database, pid: number): AppState {
 export function setAppState(
   db: Database.Database,
   pid: number,
-  partial: Partial<AppState>
+  partial: Partial<AppState>,
 ): AppState {
   const current = getAppState(db, pid)
   const next = AppStateSchema.parse({ ...current, ...partial })
   db.prepare(
-    "INSERT INTO app_state (pid, data) VALUES (?, ?) ON CONFLICT(pid) DO UPDATE SET data = excluded.data"
+    "INSERT INTO app_state (pid, data) VALUES (?, ?) ON CONFLICT(pid) DO UPDATE SET data = excluded.data",
   ).run(pid, JSON.stringify(next))
   return next
 }
@@ -557,7 +550,7 @@ export function setAppState(
 export function initAppState(db: Database.Database, pid: number): AppState {
   const state: AppState = { projectId: null }
   db.prepare(
-    "INSERT INTO app_state (pid, data) VALUES (?, ?) ON CONFLICT(pid) DO UPDATE SET data = excluded.data"
+    "INSERT INTO app_state (pid, data) VALUES (?, ?) ON CONFLICT(pid) DO UPDATE SET data = excluded.data",
   ).run(pid, JSON.stringify(state))
   return state
 }
@@ -601,6 +594,7 @@ git commit -m "feat: add SQLite db module (preferences + app_state CRUD)"
 ## Task 4: Projects file I/O module
 
 **Files:**
+
 - Create: `src/main/projects.ts`
 - Create: `src/main/projects.test.ts`
 
@@ -671,7 +665,7 @@ describe("writeProject", () => {
     const project = makeProject()
     writeProject(tmpDir, project)
     const written = JSON.parse(
-      fs.readFileSync(path.join(tmpDir, project.id, "project.json"), "utf-8")
+      fs.readFileSync(path.join(tmpDir, project.id, "project.json"), "utf-8"),
     )
     expect(written.id).toBe(project.id)
   })
@@ -682,7 +676,7 @@ describe("writeProject", () => {
     const updated = { ...project, name: "Updated" }
     writeProject(tmpDir, updated)
     const written = JSON.parse(
-      fs.readFileSync(path.join(tmpDir, project.id, "project.json"), "utf-8")
+      fs.readFileSync(path.join(tmpDir, project.id, "project.json"), "utf-8"),
     )
     expect(written.name).toBe("Updated")
   })
@@ -743,11 +737,7 @@ export function scanProjects(appMainDirectory: string): Project[] {
 export function writeProject(appMainDirectory: string, project: Project): void {
   const projectDir = path.join(appMainDirectory, project.id)
   fs.mkdirSync(projectDir, { recursive: true })
-  fs.writeFileSync(
-    path.join(projectDir, "project.json"),
-    JSON.stringify(project, null, 2),
-    "utf-8"
-  )
+  fs.writeFileSync(path.join(projectDir, "project.json"), JSON.stringify(project, null, 2), "utf-8")
 }
 
 export function deleteProjectDir(appMainDirectory: string, id: string): void {
@@ -776,6 +766,7 @@ git commit -m "feat: add projects file I/O module (scan, write, delete)"
 ## Task 5: Typed preload bridge
 
 **Files:**
+
 - Modify: `src/renderer/preload.ts`
 
 The preload script runs in the renderer's context with access to `ipcRenderer`. It exposes a typed `window.__electrand` API. Renderer code never imports from `electron` directly.
@@ -784,12 +775,7 @@ The preload script runs in the renderer's context with access to `ipcRenderer`. 
 
 ```ts
 import { contextBridge, ipcRenderer } from "electron"
-import type {
-  Preferences,
-  Project,
-  AppState,
-  AppInfo,
-} from "@shared/schemas"
+import type { Preferences, Project, AppState, AppInfo } from "@shared/schemas"
 
 // ── Invoke channel types ──────────────────────────────────────────────────────
 
@@ -835,7 +821,7 @@ export interface ElectrandBridge {
 
   on<C extends keyof PushPayloads>(
     channel: C,
-    callback: (data: PushPayloads[C]) => void
+    callback: (data: PushPayloads[C]) => void,
   ): () => void
 }
 
@@ -877,6 +863,7 @@ git commit -m "feat: rewrite preload as typed ElectrandBridge (invoke + on)"
 ## Task 6: Preferences IPC handlers
 
 **Files:**
+
 - Create: `src/main/handlers/preferences.ts`
 - Create: `src/main/handlers/preferences.test.ts`
 
@@ -915,9 +902,7 @@ describe("handleSetPreferences", () => {
   })
 
   it("rejects invalid partial (throws ZodError)", () => {
-    expect(() =>
-      handleSetPreferences(db, DEFAULTS, { fontSize: 3 })
-    ).toThrow()
+    expect(() => handleSetPreferences(db, DEFAULTS, { fontSize: 3 })).toThrow()
   })
 
   it("rejects unknown keys gracefully by ignoring them", () => {
@@ -943,17 +928,14 @@ import type Database from "better-sqlite3"
 import { PreferencesSchema, type Preferences } from "@shared/schemas"
 import { getPreferences, setPreferences } from "@main/db"
 
-export function handleGetPreferences(
-  db: Database.Database,
-  defaults: Preferences
-): Preferences {
+export function handleGetPreferences(db: Database.Database, defaults: Preferences): Preferences {
   return getPreferences(db, defaults)
 }
 
 export function handleSetPreferences(
   db: Database.Database,
   defaults: Preferences,
-  partial: unknown
+  partial: unknown,
 ): Preferences {
   const validated = PreferencesSchema.partial().parse(partial)
   const next = setPreferences(db, defaults, validated)
@@ -967,15 +949,10 @@ function broadcast(channel: string, data: unknown): void {
   }
 }
 
-export function registerPreferencesHandlers(
-  db: Database.Database,
-  defaults: Preferences
-): void {
-  ipcMain.handle("app:preferences:get", () =>
-    handleGetPreferences(db, defaults)
-  )
+export function registerPreferencesHandlers(db: Database.Database, defaults: Preferences): void {
+  ipcMain.handle("app:preferences:get", () => handleGetPreferences(db, defaults))
   ipcMain.handle("app:preferences:set", (_event, partial: unknown) =>
-    handleSetPreferences(db, defaults, partial)
+    handleSetPreferences(db, defaults, partial),
   )
 }
 ```
@@ -1000,6 +977,7 @@ git commit -m "feat: add preferences IPC handlers"
 ## Task 7: Projects IPC handlers
 
 **Files:**
+
 - Create: `src/main/handlers/projects.ts`
 - Create: `src/main/handlers/projects.test.ts`
 
@@ -1039,13 +1017,13 @@ describe("handleCreateProject", () => {
   it("creates and returns a project with generated id and timestamps", () => {
     const project = handleCreateProject(tmpDir, { name: "My App", path: "/home/user/app" })
     expect(project.id).toMatch(
-      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
     )
     expect(project.name).toBe("My App")
     expect(project.lastOpenedAt).toBeNull()
     // project.json was written to disk
     const onDisk = JSON.parse(
-      fs.readFileSync(path.join(tmpDir, project.id, "project.json"), "utf-8")
+      fs.readFileSync(path.join(tmpDir, project.id, "project.json"), "utf-8"),
     )
     expect(onDisk.id).toBe(project.id)
   })
@@ -1066,7 +1044,7 @@ describe("handleUpdateProject", () => {
 
   it("throws if project does not exist", () => {
     expect(() =>
-      handleUpdateProject(tmpDir, { id: "123e4567-e89b-12d3-a456-426614174000", name: "X" })
+      handleUpdateProject(tmpDir, { id: "123e4567-e89b-12d3-a456-426614174000", name: "X" }),
     ).toThrow("not found")
   })
 })
@@ -1114,10 +1092,7 @@ export function handleGetProjects(appMainDirectory: string): Project[] {
   return scanProjects(appMainDirectory)
 }
 
-export function handleCreateProject(
-  appMainDirectory: string,
-  input: unknown
-): Project {
+export function handleCreateProject(appMainDirectory: string, input: unknown): Project {
   const { name, path } = CreateInputSchema.parse(input)
   const now = new Date().toISOString()
   const project = ProjectSchema.parse({
@@ -1132,10 +1107,7 @@ export function handleCreateProject(
   return project
 }
 
-export function handleUpdateProject(
-  appMainDirectory: string,
-  input: unknown
-): Project {
+export function handleUpdateProject(appMainDirectory: string, input: unknown): Project {
   const { id, ...updates } = UpdateInputSchema.parse(input)
   const existing = scanProjects(appMainDirectory).find((p) => p.id === id)
   if (!existing) throw new Error(`Project ${id} not found`)
@@ -1148,10 +1120,7 @@ export function handleUpdateProject(
   return updated
 }
 
-export function handleDeleteProject(
-  appMainDirectory: string,
-  input: unknown
-): void {
+export function handleDeleteProject(appMainDirectory: string, input: unknown): void {
   const { id } = DeleteInputSchema.parse(input)
   deleteProjectDir(appMainDirectory, id)
 }
@@ -1163,12 +1132,8 @@ function broadcastProjectsChanged(appMainDirectory: string): void {
   }
 }
 
-export function registerProjectsHandlers(
-  getAppMainDirectory: () => string
-): void {
-  ipcMain.handle("app:projects:get", () =>
-    handleGetProjects(getAppMainDirectory())
-  )
+export function registerProjectsHandlers(getAppMainDirectory: () => string): void {
+  ipcMain.handle("app:projects:get", () => handleGetProjects(getAppMainDirectory()))
   ipcMain.handle("app:projects:create", (_event, input: unknown) => {
     const project = handleCreateProject(getAppMainDirectory(), input)
     broadcastProjectsChanged(getAppMainDirectory())
@@ -1206,6 +1171,7 @@ git commit -m "feat: add projects IPC handlers (create/update/delete/get)"
 ## Task 8: AppState and AppInfo IPC handlers
 
 **Files:**
+
 - Create: `src/main/handlers/appState.ts`
 - Create: `src/main/handlers/appInfo.ts`
 
@@ -1217,26 +1183,17 @@ import type Database from "better-sqlite3"
 import { AppStateSchema, type AppState } from "@shared/schemas"
 import { getAppState, setAppState } from "@main/db"
 
-export function handleGetAppState(
-  db: Database.Database,
-  pid: number
-): AppState {
+export function handleGetAppState(db: Database.Database, pid: number): AppState {
   return getAppState(db, pid)
 }
 
-export function handleSetAppState(
-  db: Database.Database,
-  pid: number,
-  partial: unknown
-): AppState {
+export function handleSetAppState(db: Database.Database, pid: number, partial: unknown): AppState {
   const validated = AppStateSchema.partial().parse(partial)
   return setAppState(db, pid, validated)
 }
 
 export function registerAppStateHandlers(db: Database.Database): void {
-  ipcMain.handle("app:appState:get", () =>
-    handleGetAppState(db, process.pid)
-  )
+  ipcMain.handle("app:appState:get", () => handleGetAppState(db, process.pid))
   ipcMain.handle("app:appState:set", (event, partial: unknown) => {
     const next = handleSetAppState(db, process.pid, partial)
     // Send only to the requesting window — appState is per-process
@@ -1281,6 +1238,7 @@ git commit -m "feat: add appState and appInfo IPC handlers"
 ## Task 9: Main process boot sequence
 
 **Files:**
+
 - Modify: `src/main/main.ts`
 - Delete: `src/lib/store/main.ts`, `src/lib/store/renderer.ts`, `src/lib/store/preload.ts`, `src/lib/store/types.ts`, `src/renderer/stores/demo.ts`
 
@@ -1327,9 +1285,7 @@ const createWindow = (): BrowserWindow => {
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL)
   } else {
-    mainWindow.loadFile(
-      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
-    )
+    mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`))
   }
 
   mainWindow.webContents.openDevTools()
@@ -1401,6 +1357,7 @@ git commit -m "feat: rewrite main.ts boot sequence; remove old IPC store"
 ## Task 10: TanStack Router + Query renderer setup
 
 **Files:**
+
 - Create: `src/renderer/router.ts`
 - Modify: `src/renderer/App.tsx`
 - Create: `src/renderer/hooks/use-ipc-invalidation.ts`
@@ -1519,8 +1476,7 @@ export function useUpdateProject() {
 export function useDeleteProject() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (input: { id: string }) =>
-      window.__electrand.invoke("app:projects:delete", input),
+    mutationFn: (input: { id: string }) => window.__electrand.invoke("app:projects:delete", input),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["projects"] })
     },
@@ -1607,6 +1563,7 @@ git commit -m "feat: set up TanStack Router + Query; add query hooks for all dom
 ## Task 11: App shell — `__root.tsx`
 
 **Files:**
+
 - Create: `src/renderer/routes/__root.tsx`
 - Create: `src/renderer/components/topbar.tsx`
 
@@ -1618,9 +1575,7 @@ import { useRouterState } from "@tanstack/react-router"
 
 export function Topbar(): React.ReactElement {
   const matches = useRouterState({ select: (s) => s.matches })
-  const title = [...matches]
-    .reverse()
-    .find((m) => (m.staticData as { title?: string }).title)
+  const title = [...matches].reverse().find((m) => (m.staticData as { title?: string }).title)
   const label = (title?.staticData as { title?: string })?.title ?? ""
 
   return (
@@ -1636,11 +1591,7 @@ export function Topbar(): React.ReactElement {
 ```tsx
 import React from "react"
 import { createRootRoute, Outlet } from "@tanstack/react-router"
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable"
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { Topbar } from "@/components/topbar"
 import { AppSidebar } from "@/components/sidebar/app-sidebar"
 import { ProjectSidebar } from "@/components/sidebar/project-sidebar"
@@ -1687,6 +1638,7 @@ git commit -m "feat: add app shell with resizable sidebar and dynamic topbar"
 ## Task 12: Sidebar components
 
 **Files:**
+
 - Create: `src/renderer/components/sidebar/app-sidebar.tsx`
 - Create: `src/renderer/components/sidebar/project-sidebar.tsx`
 
@@ -1740,10 +1692,7 @@ export function ProjectSidebar(): React.ReactElement {
   const project = projects?.find((p) => p.id === projectId)
 
   const handleClose = (): void => {
-    setAppState.mutate(
-      { projectId: null },
-      { onSuccess: () => void navigate({ to: "/" }) }
-    )
+    setAppState.mutate({ projectId: null }, { onSuccess: () => void navigate({ to: "/" }) })
   }
 
   return (
@@ -1797,6 +1746,7 @@ git commit -m "feat: add AppSidebar and ProjectSidebar components"
 ## Task 13: Home screen — project card grid
 
 **Files:**
+
 - Create: `src/renderer/routes/index.tsx`
 
 - [ ] **Step 1: Create `src/renderer/routes/index.tsx`**
@@ -1825,9 +1775,7 @@ export const Route = createFileRoute("/")({
 export const staticData = { title: "Home" }
 
 function formatDate(iso: string): string {
-  return new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(
-    new Date(iso)
-  )
+  return new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(new Date(iso))
 }
 
 function formatRelative(iso: string | null): string {
@@ -1864,19 +1812,13 @@ function ProjectCard({
         </p>
       </CardContent>
       <CardFooter>
-        <p className="text-xs text-muted-foreground">
-          Created {formatDate(project.createdAt)}
-        </p>
+        <p className="text-xs text-muted-foreground">Created {formatDate(project.createdAt)}</p>
       </CardFooter>
     </Card>
   )
 }
 
-function NewProjectForm({
-  onCancel,
-}: {
-  onCancel: () => void
-}): React.ReactElement {
+function NewProjectForm({ onCancel }: { onCancel: () => void }): React.ReactElement {
   const [name, setName] = useState("")
   const [projectPath, setProjectPath] = useState("")
   const createProject = useCreateProject()
@@ -1886,7 +1828,7 @@ function NewProjectForm({
     if (!name.trim()) return
     createProject.mutate(
       { name: name.trim(), path: projectPath.trim() || `/projects/${name.trim().toLowerCase()}` },
-      { onSuccess: onCancel }
+      { onSuccess: onCancel },
     )
   }
 
@@ -1933,7 +1875,7 @@ function HomeScreen(): React.ReactElement {
   const handleOpenProject = (id: string): void => {
     setAppState.mutate(
       { projectId: id },
-      { onSuccess: () => void navigate({ to: "/projects/$projectId", params: { projectId: id } }) }
+      { onSuccess: () => void navigate({ to: "/projects/$projectId", params: { projectId: id } }) },
     )
   }
 
@@ -1985,6 +1927,7 @@ git commit -m "feat: add home screen with project card grid"
 ## Task 14: Preferences and About screens
 
 **Files:**
+
 - Create: `src/renderer/routes/preferences.tsx`
 - Create: `src/renderer/routes/about.tsx`
 
@@ -2019,9 +1962,7 @@ function PreferencesScreen(): React.ReactElement {
           <span className="text-sm">Theme</span>
           <button
             className="text-sm text-muted-foreground hover:text-foreground"
-            onClick={() =>
-              setPrefs.mutate({ theme: prefs.theme === "dark" ? "light" : "dark" })
-            }
+            onClick={() => setPrefs.mutate({ theme: prefs.theme === "dark" ? "light" : "dark" })}
           >
             {prefs.theme === "dark" ? "Dark" : "Light"}
           </button>
@@ -2053,9 +1994,7 @@ function PreferencesScreen(): React.ReactElement {
         <h2 className="text-sm font-medium">Storage</h2>
         <div className="rounded-md border px-4 py-3">
           <p className="text-sm font-medium">App data directory</p>
-          <p className="mt-1 break-all text-xs text-muted-foreground">
-            {prefs.appMainDirectory}
-          </p>
+          <p className="mt-1 break-all text-xs text-muted-foreground">{prefs.appMainDirectory}</p>
         </div>
       </section>
     </div>
@@ -2120,6 +2059,7 @@ git commit -m "feat: add Preferences and About screens"
 ## Task 15: Project routes — layout, overview, settings
 
 **Files:**
+
 - Create: `src/renderer/routes/projects/$projectId/route.tsx`
 - Create: `src/renderer/routes/projects/$projectId/index.tsx`
 - Create: `src/renderer/routes/projects/$projectId/settings.tsx`
@@ -2266,12 +2206,9 @@ function ProjectSettings(): React.ReactElement {
       { id: projectId },
       {
         onSuccess: () => {
-          setAppState.mutate(
-            { projectId: null },
-            { onSuccess: () => void navigate({ to: "/" }) }
-          )
+          setAppState.mutate({ projectId: null }, { onSuccess: () => void navigate({ to: "/" }) })
         },
-      }
+      },
     )
   }
 
@@ -2297,11 +2234,7 @@ function ProjectSettings(): React.ReactElement {
             onChange={(e) => setProjectPath(e.target.value)}
           />
         </div>
-        <Button
-          size="sm"
-          disabled={!isDirty || updateProject.isPending}
-          onClick={handleSave}
-        >
+        <Button size="sm" disabled={!isDirty || updateProject.isPending} onClick={handleSave}>
           {updateProject.isPending ? "Saving…" : "Save changes"}
         </Button>
       </section>
@@ -2312,11 +2245,7 @@ function ProjectSettings(): React.ReactElement {
           Deleting a project removes its folder and all associated data permanently.
         </p>
         {!confirmDelete ? (
-          <Button
-            size="sm"
-            variant="destructive"
-            onClick={() => setConfirmDelete(true)}
-          >
+          <Button size="sm" variant="destructive" onClick={() => setConfirmDelete(true)}>
             Delete project
           </Button>
         ) : (
@@ -2329,11 +2258,7 @@ function ProjectSettings(): React.ReactElement {
             >
               {deleteProject.isPending ? "Deleting…" : "Confirm delete"}
             </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => setConfirmDelete(false)}
-            >
+            <Button size="sm" variant="ghost" onClick={() => setConfirmDelete(false)}>
               Cancel
             </Button>
           </div>
@@ -2408,28 +2333,28 @@ git commit -m "feat: complete TanStack Router + Query + SQLite integration"
 
 **Spec coverage check:**
 
-| Spec requirement | Covered by task |
-|---|---|
-| File-based routing, memory history | Tasks 1, 10 |
-| SQLite for preferences + app_state | Tasks 3, 9 |
-| Per-pid app_state, stale cleanup on boot | Tasks 3, 9 |
-| Project folders as JSON on disk | Task 4 |
-| Boot sequence | Task 9 |
-| Typed preload bridge | Task 5 |
-| ResizablePanelGroup sidebar | Task 11 |
-| Dynamic topbar via staticData | Tasks 11, 13, 14, 15 |
-| AppSidebar / ProjectSidebar context switch | Tasks 11, 12 |
-| Close project button | Task 12 |
-| Home screen with shadcn Card grid | Task 13 |
-| New project form | Task 13 |
-| Preferences screen | Task 14 |
-| About screen | Task 14 |
-| Project overview screen | Task 15 |
-| Project settings + delete | Task 15 |
-| Zod schemas, no `any`/unsafe casts | Tasks 2, 3, 4, 6, 7, 8 |
-| Push event invalidation | Task 10 |
-| shadcn resizable + card | Task 1 |
-| Delete old store | Task 9 |
+| Spec requirement                           | Covered by task        |
+| ------------------------------------------ | ---------------------- |
+| File-based routing, memory history         | Tasks 1, 10            |
+| SQLite for preferences + app_state         | Tasks 3, 9             |
+| Per-pid app_state, stale cleanup on boot   | Tasks 3, 9             |
+| Project folders as JSON on disk            | Task 4                 |
+| Boot sequence                              | Task 9                 |
+| Typed preload bridge                       | Task 5                 |
+| ResizablePanelGroup sidebar                | Task 11                |
+| Dynamic topbar via staticData              | Tasks 11, 13, 14, 15   |
+| AppSidebar / ProjectSidebar context switch | Tasks 11, 12           |
+| Close project button                       | Task 12                |
+| Home screen with shadcn Card grid          | Task 13                |
+| New project form                           | Task 13                |
+| Preferences screen                         | Task 14                |
+| About screen                               | Task 14                |
+| Project overview screen                    | Task 15                |
+| Project settings + delete                  | Task 15                |
+| Zod schemas, no `any`/unsafe casts         | Tasks 2, 3, 4, 6, 7, 8 |
+| Push event invalidation                    | Task 10                |
+| shadcn resizable + card                    | Task 1                 |
+| Delete old store                           | Task 9                 |
 
 All spec requirements covered. No gaps found.
 

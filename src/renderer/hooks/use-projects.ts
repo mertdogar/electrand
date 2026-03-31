@@ -32,8 +32,7 @@ export function useUpdateProject() {
 export function useDeleteProject() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (input: { id: string }) =>
-      window.__electrand.invoke("app:projects:delete", input),
+    mutationFn: (input: { id: string }) => window.__electrand.invoke("app:projects:delete", input),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["projects"] })
     },

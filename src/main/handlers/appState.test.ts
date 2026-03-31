@@ -25,9 +25,7 @@ describe("handleSetAppState", () => {
   })
 
   it("rejects invalid partial (throws ZodError)", () => {
-    expect(() =>
-      handleSetAppState(db, 12345, { projectId: "not-a-uuid" })
-    ).toThrow()
+    expect(() => handleSetAppState(db, 12345, { projectId: "not-a-uuid" })).toThrow()
   })
 
   it("sets projectId back to null", () => {

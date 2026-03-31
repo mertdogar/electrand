@@ -13,6 +13,7 @@
 ### Task 1: Update Input component to elevated style
 
 **Files:**
+
 - Modify: `src/renderer/components/ui/input.tsx`
 
 - [ ] **Step 1: Update Input base classes**
@@ -29,7 +30,7 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
         "h-9 w-full min-w-0 rounded-md border border-border/40 bg-card px-3 py-1 text-base shadow-sm transition-[color,box-shadow] outline-none selection:bg-primary selection:text-primary-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
         "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50",
         "aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40",
-        className
+        className,
       )}
       {...props}
     />
@@ -38,6 +39,7 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
 ```
 
 Key changes from original:
+
 - `border-input` → `border-border/40` (much softer border)
 - `bg-transparent` → `bg-card` (white background that lifts off page)
 - `shadow-xs` → `shadow-sm` (subtle elevation)
@@ -61,6 +63,7 @@ git commit -m "style: update Input component to elevated shadow style"
 ### Task 2: Replace raw inputs in Home screen (New Project form)
 
 **Files:**
+
 - Modify: `src/renderer/routes/index.tsx`
 
 - [ ] **Step 1: Add Input import and replace raw inputs**
@@ -68,11 +71,13 @@ git commit -m "style: update Input component to elevated shadow style"
 In `src/renderer/routes/index.tsx`, add `Input` to the imports and replace the raw `<input>` elements in `NewProjectForm`:
 
 Add to imports at the top:
+
 ```tsx
 import { Input } from "@/components/ui/input"
 ```
 
 Replace the `NewProjectForm` component's `CardContent` section. Change:
+
 ```tsx
 <CardContent className="flex flex-col gap-3">
   <input
@@ -92,6 +97,7 @@ Replace the `NewProjectForm` component's `CardContent` section. Change:
 ```
 
 To:
+
 ```tsx
 <CardContent className="flex flex-col gap-3">
   <Input
@@ -111,6 +117,7 @@ To:
 - [ ] **Step 2: Add hover elevation to ProjectCard**
 
 In the same file, update the `ProjectCard` component's `Card` className. Change:
+
 ```tsx
 <Card
   className="cursor-pointer transition-colors hover:bg-accent"
@@ -119,6 +126,7 @@ In the same file, update the `ProjectCard` component's `Card` className. Change:
 ```
 
 To:
+
 ```tsx
 <Card
   className="cursor-pointer transition-shadow hover:shadow-md"
@@ -131,6 +139,7 @@ To:
 Run: `cd /Users/mertdogar/Workspace/personal/electrand && npm run start`
 
 Verify:
+
 - New Project form inputs have the soft shadow style (no harsh border ring)
 - Project cards elevate on hover with a shadow transition
 - Create/Cancel buttons still work
@@ -147,22 +156,20 @@ git commit -m "style: use Input component and hover shadow on Home screen"
 ### Task 3: Replace raw inputs in Project Settings
 
 **Files:**
+
 - Modify: `src/renderer/routes/projects/$projectId/settings.tsx`
 
 - [ ] **Step 1: Add Input and Card imports, replace raw inputs**
 
 In `src/renderer/routes/projects/$projectId/settings.tsx`, add imports:
+
 ```tsx
 import { Input } from "@/components/ui/input"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 ```
 
 Replace the two raw `<input>` elements in the General section. Change:
+
 ```tsx
 <input
   id="project-name"
@@ -173,15 +180,13 @@ Replace the two raw `<input>` elements in the General section. Change:
 ```
 
 To:
+
 ```tsx
-<Input
-  id="project-name"
-  value={name}
-  onChange={(e) => setName(e.target.value)}
-/>
+<Input id="project-name" value={name} onChange={(e) => setName(e.target.value)} />
 ```
 
 And change:
+
 ```tsx
 <input
   id="project-path"
@@ -192,23 +197,22 @@ And change:
 ```
 
 To:
+
 ```tsx
-<Input
-  id="project-path"
-  value={projectPath}
-  onChange={(e) => setProjectPath(e.target.value)}
-/>
+<Input id="project-path" value={projectPath} onChange={(e) => setProjectPath(e.target.value)} />
 ```
 
 - [ ] **Step 2: Wrap danger zone in a Card**
 
 Replace the danger zone `PageSection`. Change:
+
 ```tsx
 <PageSection className="rounded-md border border-destructive/40 p-4">
   <h2 className="text-sm font-medium text-destructive">Danger Zone</h2>
 ```
 
 To:
+
 ```tsx
 <Card className="border-destructive/40">
   <CardHeader>
@@ -218,6 +222,7 @@ To:
 ```
 
 And close the Card properly. The full danger zone becomes:
+
 ```tsx
 <Card className="border-destructive/40">
   <CardHeader>
@@ -255,6 +260,7 @@ And close the Card properly. The full danger zone becomes:
 Run: `cd /Users/mertdogar/Workspace/personal/electrand && npm run start`
 
 Navigate to a project's settings page. Verify:
+
 - Name and Path inputs use the new elevated style
 - Danger zone is wrapped in a Card with a subtle destructive border
 - Save and Delete buttons still work
@@ -271,19 +277,19 @@ git commit -m "style: use Input component and Card in Project Settings"
 ### Task 4: Update Preferences page styling
 
 **Files:**
+
 - Modify: `src/renderer/routes/preferences.tsx`
 
 - [ ] **Step 1: Replace inline border wrappers with Card components**
 
 In `src/renderer/routes/preferences.tsx`, add Card imports:
+
 ```tsx
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 ```
 
 Replace the Appearance section's inline bordered divs with Cards. Change:
+
 ```tsx
 <div className="flex items-center justify-between rounded-md border px-4 py-3">
   <span className="text-sm">Theme</span>
@@ -297,6 +303,7 @@ Replace the Appearance section's inline bordered divs with Cards. Change:
 ```
 
 To:
+
 ```tsx
 <Card>
   <CardContent className="flex items-center justify-between py-3">
@@ -312,6 +319,7 @@ To:
 ```
 
 Do the same for the font size row. Change:
+
 ```tsx
 <div className="flex items-center justify-between rounded-md border px-4 py-3">
   <span className="text-sm">Font size</span>
@@ -336,6 +344,7 @@ Do the same for the font size row. Change:
 ```
 
 To:
+
 ```tsx
 <Card>
   <CardContent className="flex items-center justify-between py-3">
@@ -362,23 +371,21 @@ To:
 ```
 
 And the Storage section. Change:
+
 ```tsx
 <div className="rounded-md border px-4 py-3">
   <p className="text-sm font-medium">App data directory</p>
-  <p className="mt-1 break-all text-xs text-muted-foreground">
-    {prefs.appMainDirectory}
-  </p>
+  <p className="mt-1 break-all text-xs text-muted-foreground">{prefs.appMainDirectory}</p>
 </div>
 ```
 
 To:
+
 ```tsx
 <Card>
   <CardContent className="py-3">
     <p className="text-sm font-medium">App data directory</p>
-    <p className="mt-1 break-all text-xs text-muted-foreground">
-      {prefs.appMainDirectory}
-    </p>
+    <p className="mt-1 break-all text-xs text-muted-foreground">{prefs.appMainDirectory}</p>
   </CardContent>
 </Card>
 ```
@@ -388,6 +395,7 @@ To:
 Run: `cd /Users/mertdogar/Workspace/personal/electrand && npm run start`
 
 Verify:
+
 - Theme toggle, font size controls, and storage info are wrapped in elevated Cards
 - Interactive elements still work (theme toggles, font size +/-)
 - Consistent visual style with the rest of the app
@@ -404,11 +412,13 @@ git commit -m "style: use Card components in Preferences page"
 ### Task 5: Install shadcn Command component
 
 **Files:**
+
 - Create: `src/renderer/components/ui/command.tsx` (generated by shadcn CLI)
 
 - [ ] **Step 1: Install the Command component via shadcn CLI**
 
 Run:
+
 ```bash
 cd /Users/mertdogar/Workspace/personal/electrand && npx shadcn@latest add command --yes
 ```
@@ -418,6 +428,7 @@ This will create `src/renderer/components/ui/command.tsx` which wraps the `cmdk`
 - [ ] **Step 2: Verify the component was created**
 
 Run:
+
 ```bash
 ls -la src/renderer/components/ui/command.tsx
 ```
@@ -442,6 +453,7 @@ git commit -m "feat: add shadcn Command component"
 ### Task 6: Create CommandPalette component
 
 **Files:**
+
 - Create: `src/renderer/components/command-palette.tsx`
 
 - [ ] **Step 1: Create the CommandPalette component**
@@ -451,16 +463,7 @@ Create `src/renderer/components/command-palette.tsx`:
 ```tsx
 import React, { useEffect, useState } from "react"
 import { useNavigate } from "@tanstack/react-router"
-import {
-  FolderOpen,
-  Home,
-  Info,
-  Minus,
-  Moon,
-  Plus,
-  Settings,
-  Sun,
-} from "lucide-react"
+import { FolderOpen, Home, Info, Minus, Moon, Plus, Settings, Sun } from "lucide-react"
 import {
   CommandDialog,
   CommandEmpty,
@@ -555,7 +558,7 @@ export function CommandPalette(): React.ReactElement {
                           to: "/projects/$projectId",
                           params: { projectId: project.id },
                         }),
-                    }
+                    },
                   )
                 })
               }
@@ -645,16 +648,19 @@ git commit -m "feat: create CommandPalette component"
 ### Task 7: Wire CommandPalette into root layout
 
 **Files:**
+
 - Modify: `src/renderer/routes/__root.tsx`
 
 - [ ] **Step 1: Import and render CommandPalette**
 
 In `src/renderer/routes/__root.tsx`, add the import:
+
 ```tsx
 import { CommandPalette } from "@/components/command-palette"
 ```
 
 Then render `<CommandPalette />` inside the `SidebarProvider`, after `<SidebarInset>`. The full return becomes:
+
 ```tsx
 return (
   <SidebarProvider>
@@ -675,6 +681,7 @@ return (
 Run: `cd /Users/mertdogar/Workspace/personal/electrand && npm run start`
 
 Verify:
+
 - Press `Cmd+K` — the command palette dialog opens with a search input
 - Type "home" — filters to show the Home navigation item
 - Click "Home" — navigates to the home page and closes the palette

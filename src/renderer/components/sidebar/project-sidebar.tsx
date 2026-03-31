@@ -33,7 +33,7 @@ export function ProjectSidebar(): React.ReactElement | null {
       {
         onSuccess: () => void navigate({ to: "/" }),
         onError: (err) => console.error("Failed to close project:", err),
-      }
+      },
     )
   }
 
@@ -61,20 +61,14 @@ export function ProjectSidebar(): React.ReactElement | null {
         <SidebarGroup>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                isActive={pathname === `/projects/${projectId}`}
-              >
+              <SidebarMenuButton asChild isActive={pathname === `/projects/${projectId}`}>
                 <Link to="/projects/$projectId" params={{ projectId }}>
                   Overview
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                isActive={pathname === `/projects/${projectId}/settings`}
-              >
+              <SidebarMenuButton asChild isActive={pathname === `/projects/${projectId}/settings`}>
                 <Link to="/projects/$projectId/settings" params={{ projectId }}>
                   Settings
                 </Link>

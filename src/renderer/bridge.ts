@@ -38,7 +38,7 @@ export interface ElectrandBridge {
 
   on<C extends keyof PushPayloads>(
     channel: C,
-    callback: (data: PushPayloads[C]) => void
+    callback: (data: PushPayloads[C]) => void,
   ): () => void
 }
 

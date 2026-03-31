@@ -2,10 +2,7 @@ import React from "react"
 import { createFileRoute } from "@tanstack/react-router"
 import { usePreferences, useSetPreferences } from "@/hooks/use-preferences"
 import { PageContent, PageSection, PageTitle } from "@/components/ui/page"
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 
 export const Route = createFileRoute("/preferences")({
   component: PreferencesScreen,
@@ -65,9 +62,7 @@ function PreferencesScreen(): React.ReactElement {
         <Card>
           <CardContent className="py-3">
             <p className="text-sm font-medium">App data directory</p>
-            <p className="mt-1 break-all text-xs text-muted-foreground">
-              {prefs.appMainDirectory}
-            </p>
+            <p className="mt-1 break-all text-xs text-muted-foreground">{prefs.appMainDirectory}</p>
           </CardContent>
         </Card>
       </PageSection>

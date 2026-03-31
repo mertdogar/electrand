@@ -1,10 +1,5 @@
 import { describe, it, expect } from "vitest"
-import {
-  ProjectSchema,
-  PreferencesSchema,
-  AppStateSchema,
-  AppInfoSchema,
-} from "./schemas"
+import { ProjectSchema, PreferencesSchema, AppStateSchema, AppInfoSchema } from "./schemas"
 
 describe("ProjectSchema", () => {
   it("parses a valid project", () => {
@@ -28,7 +23,7 @@ describe("ProjectSchema", () => {
         createdAt: "2026-01-01T00:00:00.000Z",
         updatedAt: "2026-01-01T00:00:00.000Z",
         lastOpenedAt: null,
-      })
+      }),
     ).toThrow()
   })
 
@@ -41,7 +36,7 @@ describe("ProjectSchema", () => {
         createdAt: "2026-01-01T00:00:00.000Z",
         updatedAt: "2026-01-01T00:00:00.000Z",
         lastOpenedAt: null,
-      })
+      }),
     ).toThrow()
   })
 })
@@ -54,13 +49,13 @@ describe("PreferencesSchema", () => {
 
   it("rejects invalid theme", () => {
     expect(() =>
-      PreferencesSchema.parse({ theme: "blue", fontSize: 14, appMainDirectory: "/tmp" })
+      PreferencesSchema.parse({ theme: "blue", fontSize: 14, appMainDirectory: "/tmp" }),
     ).toThrow()
   })
 
   it("rejects fontSize out of range", () => {
     expect(() =>
-      PreferencesSchema.parse({ theme: "dark", fontSize: 5, appMainDirectory: "/tmp" })
+      PreferencesSchema.parse({ theme: "dark", fontSize: 5, appMainDirectory: "/tmp" }),
     ).toThrow()
   })
 })
@@ -72,7 +67,7 @@ describe("AppInfoSchema", () => {
         name: "electrand",
         version: "1.0.0",
         versions: { electron: "41.1.0", node: "20.0.0", chrome: "120.0.0" },
-      })
+      }),
     ).not.toThrow()
   })
 
@@ -82,7 +77,7 @@ describe("AppInfoSchema", () => {
         name: "",
         version: "1.0.0",
         versions: { electron: "41.1.0", node: "20.0.0", chrome: "120.0.0" },
-      })
+      }),
     ).toThrow()
   })
 })
@@ -94,7 +89,7 @@ describe("AppStateSchema", () => {
 
   it("accepts valid uuid projectId", () => {
     expect(() =>
-      AppStateSchema.parse({ projectId: "123e4567-e89b-12d3-a456-426614174000" })
+      AppStateSchema.parse({ projectId: "123e4567-e89b-12d3-a456-426614174000" }),
     ).not.toThrow()
   })
 

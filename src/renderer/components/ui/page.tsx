@@ -24,11 +24,7 @@ export function PageTitle({
   children: React.ReactNode
   className?: string
 }): React.ReactElement {
-  return (
-    <h1 className={cn("text-xl font-semibold tracking-tight", className)}>
-      {children}
-    </h1>
-  )
+  return <h1 className={cn("text-xl font-semibold tracking-tight", className)}>{children}</h1>
 }
 
 export function PageSection({
@@ -52,11 +48,7 @@ export function PageSection({
   )
 }
 
-export function PageMeta({
-  rows,
-}: {
-  rows: [string, string][]
-}): React.ReactElement {
+export function PageMeta({ rows }: { rows: [string, string][] }): React.ReactElement {
   return (
     <table className="w-full text-sm">
       <tbody>

@@ -22,25 +22,26 @@ Introduce TanStack Router (file-based, memory history) and TanStack Query into t
 
 The custom `src/lib/store/` system is removed and replaced:
 
-| Concern | Tool |
-|---|---|
-| Main-process state (preferences, projects, app state) | TanStack Query (`useQuery` + `useMutation`) |
-| Cache invalidation on main-process changes | `ipcRenderer.on(event, () => queryClient.invalidateQueries(...))` |
-| Local renderer-only UI state | `useState` |
+| Concern                                               | Tool                                                              |
+| ----------------------------------------------------- | ----------------------------------------------------------------- |
+| Main-process state (preferences, projects, app state) | TanStack Query (`useQuery` + `useMutation`)                       |
+| Cache invalidation on main-process changes            | `ipcRenderer.on(event, () => queryClient.invalidateQueries(...))` |
+| Local renderer-only UI state                          | `useState`                                                        |
 
 IPC handlers in the main process serve all data. When state changes, main pushes an event to all windows; each window's Query cache is invalidated and refetches.
 
 ### Storage
 
-| Data | Storage | Reason |
-|---|---|---|
-| Preferences | SQLite (`preferences` table, single row) | Shared across processes, no concurrent write conflicts |
-| Active project per process | SQLite (`app_state` table, one row per pid) | Multiple instances, concurrent-safe, stale pid cleanup on boot |
-| Project metadata | `{appMainDirectory}/{projectId}/project.json` | File-per-project pattern preserves extensibility |
+| Data                       | Storage                                       | Reason                                                         |
+| -------------------------- | --------------------------------------------- | -------------------------------------------------------------- |
+| Preferences                | SQLite (`preferences` table, single row)      | Shared across processes, no concurrent write conflicts         |
+| Active project per process | SQLite (`app_state` table, one row per pid)   | Multiple instances, concurrent-safe, stale pid cleanup on boot |
+| Project metadata           | `{appMainDirectory}/{projectId}/project.json` | File-per-project pattern preserves extensibility               |
 
 ### State Removal
 
 The following files are deleted:
+
 - `src/lib/store/main.ts`
 - `src/lib/store/renderer.ts`
 - `src/lib/store/preload.ts`
@@ -161,11 +162,13 @@ src/
 `__root.tsx` reads `useQuery({ queryKey: ['appState'] })`. If `appState.projectId` is non-null, renders `ProjectSidebar`; otherwise renders `AppSidebar`. No prop drilling — both sidebars query what they need independently.
 
 **`AppSidebar`** — default nav:
+
 - Home (icon + label)
 - Preferences
 - About
 
 **`ProjectSidebar`** — shown when a project is open:
+
 - Project name (header, truncated)
 - Overview link (`/projects/$projectId`)
 - Settings link (`/projects/$projectId/settings`)
@@ -183,6 +186,7 @@ On mount: calls `useMutation(app:appState:set, { projectId })` to record the act
 ### Home (`/`)
 
 Project list as a card grid using shadcn `Card`. Each card displays:
+
 - Project name (bold, `CardTitle`)
 - Project path (`CardDescription`, truncated)
 - Last opened: relative timestamp or "Never opened" (`CardContent`)
@@ -227,20 +231,20 @@ Empty state: centered message with a "Create your first project" prompt.
 
 ### Channels
 
-| Channel | Direction | Payload | Returns |
-|---|---|---|---|
-| `app:preferences:get` | renderer → main | — | `Preferences` |
-| `app:preferences:set` | renderer → main | `Partial<Preferences>` | `Preferences` |
-| `app:preferences:changed` | main → renderer (push) | `Preferences` | — |
-| `app:projects:get` | renderer → main | — | `Project[]` |
-| `app:projects:create` | renderer → main | `{ name: string; path: string }` | `Project` |
-| `app:projects:update` | renderer → main | `{ id: string } & Partial<{ name: string; path: string }>` | `Project` |
-| `app:projects:delete` | renderer → main | `{ id: string }` | `void` |
-| `app:projects:changed` | main → renderer (push) | `Project[]` | — |
-| `app:appState:get` | renderer → main | — | `AppState` |
-| `app:appState:set` | renderer → main | `Partial<AppState>` | `AppState` |
-| `app:appState:changed` | main → renderer (push) | `AppState` | — |
-| `app:info:get` | renderer → main | — | `AppInfo` |
+| Channel                   | Direction              | Payload                                                    | Returns       |
+| ------------------------- | ---------------------- | ---------------------------------------------------------- | ------------- |
+| `app:preferences:get`     | renderer → main        | —                                                          | `Preferences` |
+| `app:preferences:set`     | renderer → main        | `Partial<Preferences>`                                     | `Preferences` |
+| `app:preferences:changed` | main → renderer (push) | `Preferences`                                              | —             |
+| `app:projects:get`        | renderer → main        | —                                                          | `Project[]`   |
+| `app:projects:create`     | renderer → main        | `{ name: string; path: string }`                           | `Project`     |
+| `app:projects:update`     | renderer → main        | `{ id: string } & Partial<{ name: string; path: string }>` | `Project`     |
+| `app:projects:delete`     | renderer → main        | `{ id: string }`                                           | `void`        |
+| `app:projects:changed`    | main → renderer (push) | `Project[]`                                                | —             |
+| `app:appState:get`        | renderer → main        | —                                                          | `AppState`    |
+| `app:appState:set`        | renderer → main        | `Partial<AppState>`                                        | `AppState`    |
+| `app:appState:changed`    | main → renderer (push) | `AppState`                                                 | —             |
+| `app:info:get`            | renderer → main        | —                                                          | `AppInfo`     |
 
 - `app:projects:create` assigns `id` (uuid), `createdAt`, `updatedAt`, `lastOpenedAt: null` in main
 - `app:projects:update` always sets `updatedAt` to current timestamp in main
@@ -267,7 +271,7 @@ export const ProjectSchema = z.object({
 export type Project = z.infer<typeof ProjectSchema>
 
 export const PreferencesSchema = z.object({
-  theme: z.enum(['dark', 'light']),
+  theme: z.enum(["dark", "light"]),
   fontSize: z.number().int().min(8).max(32),
   appMainDirectory: z.string().min(1),
 })
@@ -290,9 +294,9 @@ export type AppInfo = z.infer<typeof AppInfoSchema>
 
 ```ts
 const DEFAULT_PREFERENCES: Preferences = {
-  theme: 'dark',
+  theme: "dark",
   fontSize: 14,
-  appMainDirectory: path.join(os.homedir(), '.local', app.getName()),
+  appMainDirectory: path.join(os.homedir(), ".local", app.getName()),
 }
 
 const DEFAULT_APP_STATE: AppState = { projectId: null }
@@ -319,6 +323,7 @@ better-sqlite3
 ```
 
 shadcn components to add:
+
 ```
 npx shadcn add resizable card
 ```

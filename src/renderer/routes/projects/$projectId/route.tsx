@@ -12,7 +12,7 @@ function ProjectLayout(): React.ReactElement {
   useEffect(() => {
     setAppStateMutate(
       { projectId },
-      { onError: (err) => console.error("Failed to set active project:", err) }
+      { onError: (err) => console.error("Failed to set active project:", err) },
     )
   }, [projectId, setAppStateMutate])
 

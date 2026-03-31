@@ -28,11 +28,7 @@ export function scanProjects(appMainDirectory: string): Project[] {
 export function writeProject(appMainDirectory: string, project: Project): void {
   const projectDir = path.join(appMainDirectory, project.id)
   fs.mkdirSync(projectDir, { recursive: true })
-  fs.writeFileSync(
-    path.join(projectDir, "project.json"),
-    JSON.stringify(project, null, 2),
-    "utf-8"
-  )
+  fs.writeFileSync(path.join(projectDir, "project.json"), JSON.stringify(project, null, 2), "utf-8")
 }
 
 export function deleteProjectDir(appMainDirectory: string, id: string): void {

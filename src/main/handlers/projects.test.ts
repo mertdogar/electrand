@@ -29,13 +29,13 @@ describe("handleCreateProject", () => {
   it("creates and returns a project with generated id and timestamps", () => {
     const project = handleCreateProject(tmpDir, { name: "My App", path: "/home/user/app" })
     expect(project.id).toMatch(
-      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
     )
     expect(project.name).toBe("My App")
     expect(project.lastOpenedAt).toBeNull()
     // project.json was written to disk
     const onDisk = JSON.parse(
-      fs.readFileSync(path.join(tmpDir, project.id, "project.json"), "utf-8")
+      fs.readFileSync(path.join(tmpDir, project.id, "project.json"), "utf-8"),
     )
     expect(onDisk.id).toBe(project.id)
   })
@@ -56,7 +56,7 @@ describe("handleUpdateProject", () => {
 
   it("throws if project does not exist", () => {
     expect(() =>
-      handleUpdateProject(tmpDir, { id: "123e4567-e89b-12d3-a456-426614174000", name: "X" })
+      handleUpdateProject(tmpDir, { id: "123e4567-e89b-12d3-a456-426614174000", name: "X" }),
     ).toThrow("not found")
   })
 })

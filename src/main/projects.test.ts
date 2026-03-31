@@ -60,7 +60,7 @@ describe("writeProject", () => {
     const project = makeProject()
     writeProject(tmpDir, project)
     const written = JSON.parse(
-      fs.readFileSync(path.join(tmpDir, project.id, "project.json"), "utf-8")
+      fs.readFileSync(path.join(tmpDir, project.id, "project.json"), "utf-8"),
     )
     expect(written.id).toBe(project.id)
   })
@@ -71,7 +71,7 @@ describe("writeProject", () => {
     const updated = { ...project, name: "Updated" }
     writeProject(tmpDir, updated)
     const written = JSON.parse(
-      fs.readFileSync(path.join(tmpDir, project.id, "project.json"), "utf-8")
+      fs.readFileSync(path.join(tmpDir, project.id, "project.json"), "utf-8"),
     )
     expect(written.name).toBe("Updated")
   })

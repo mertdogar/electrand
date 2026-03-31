@@ -21,10 +21,7 @@ export function handleGetProjects(appMainDirectory: string): Project[] {
   return scanProjects(appMainDirectory)
 }
 
-export function handleCreateProject(
-  appMainDirectory: string,
-  input: unknown
-): Project {
+export function handleCreateProject(appMainDirectory: string, input: unknown): Project {
   const { name, path } = CreateInputSchema.parse(input)
   const now = new Date().toISOString()
   const project = ProjectSchema.parse({
@@ -39,10 +36,7 @@ export function handleCreateProject(
   return project
 }
 
-export function handleUpdateProject(
-  appMainDirectory: string,
-  input: unknown
-): Project {
+export function handleUpdateProject(appMainDirectory: string, input: unknown): Project {
   const { id, ...updates } = UpdateInputSchema.parse(input)
   const existing = readProject(appMainDirectory, id)
   if (!existing) throw new Error(`Project ${id} not found`)
@@ -55,10 +49,7 @@ export function handleUpdateProject(
   return updated
 }
 
-export function handleDeleteProject(
-  appMainDirectory: string,
-  input: unknown
-): void {
+export function handleDeleteProject(appMainDirectory: string, input: unknown): void {
   const { id } = DeleteInputSchema.parse(input)
   deleteProjectDir(appMainDirectory, id)
 }
@@ -73,12 +64,8 @@ function broadcastProjectsChanged(projects: Project[]): void {
   }
 }
 
-export function registerProjectsHandlers(
-  getAppMainDirectory: () => string
-): void {
-  ipcMain.handle("app:projects:get", () =>
-    handleGetProjects(getAppMainDirectory())
-  )
+export function registerProjectsHandlers(getAppMainDirectory: () => string): void {
+  ipcMain.handle("app:projects:get", () => handleGetProjects(getAppMainDirectory()))
   ipcMain.handle("app:projects:create", (_event, input: unknown) => {
     const project = handleCreateProject(getAppMainDirectory(), input)
     broadcastProjectsChanged(handleGetProjects(getAppMainDirectory()))

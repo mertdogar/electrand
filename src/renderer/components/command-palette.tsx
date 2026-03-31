@@ -1,15 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { useNavigate } from "@tanstack/react-router"
-import {
-  FolderOpen,
-  Home,
-  Info,
-  Minus,
-  Moon,
-  Plus,
-  Settings,
-  Sun,
-} from "lucide-react"
+import { FolderOpen, Home, Info, Minus, Moon, Plus, Settings, Sun } from "lucide-react"
 import {
   CommandDialog,
   CommandEmpty,
@@ -104,7 +95,7 @@ export function CommandPalette(): React.ReactElement {
                           to: "/projects/$projectId",
                           params: { projectId: project.id },
                         }),
-                    }
+                    },
                   )
                 })
               }

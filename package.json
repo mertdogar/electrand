@@ -1,10 +1,15 @@
 {
   "name": "electrand",
-  "productName": "electrand",
   "version": "1.0.0",
-  "description": "My Electron application description",
-  "main": ".vite/build/main.js",
   "private": true,
+  "description": "My Electron application description",
+  "keywords": [],
+  "license": "MIT",
+  "author": {
+    "name": "Mert",
+    "email": "mertdogar@gmail.com"
+  },
+  "main": ".vite/build/main.js",
   "scripts": {
     "debug": "electron-forge start",
     "start": "electron-forge start",
@@ -12,15 +17,28 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "oxlint",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
     "test": "vitest run",
     "postinstall": "electron-rebuild -f -w better-sqlite3"
   },
-  "keywords": [],
-  "author": {
-    "name": "Mert",
-    "email": "mertdogar@gmail.com"
+  "dependencies": {
+    "@tanstack/react-query": "^5.96.0",
+    "@tanstack/react-query-devtools": "^5.96.0",
+    "@tanstack/react-router": "^1.168.10",
+    "better-sqlite3": "^12.8.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
+    "electron-squirrel-startup": "^1.0.1",
+    "lucide-react": "^1.7.0",
+    "radix-ui": "^1.4.3",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-resizable-panels": "^4.8.0",
+    "tailwind-merge": "^3.5.0",
+    "zod": "^4.3.6"
   },
-  "license": "MIT",
   "devDependencies": {
     "@electron-forge/cli": "^7.11.1",
     "@electron-forge/maker-deb": "^7.11.1",
@@ -43,6 +61,7 @@
     "dependencies-tree": "^2.0.0",
     "electron": "41.1.0",
     "electron-forge-plugin-dependencies": "^1.0.0",
+    "oxfmt": "^0.43.0",
     "oxlint": "^1.58.0",
     "shadcn": "^4.1.1",
     "tailwindcss": "^4.2.2",
@@ -50,21 +69,5 @@
     "vite": "^8.0.3",
     "vitest": "^4.1.2"
   },
-  "dependencies": {
-    "@tanstack/react-query": "^5.96.0",
-    "@tanstack/react-query-devtools": "^5.96.0",
-    "@tanstack/react-router": "^1.168.10",
-    "better-sqlite3": "^12.8.0",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "cmdk": "^1.1.1",
-    "electron-squirrel-startup": "^1.0.1",
-    "lucide-react": "^1.7.0",
-    "radix-ui": "^1.4.3",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
-    "react-resizable-panels": "^4.8.0",
-    "tailwind-merge": "^3.5.0",
-    "zod": "^4.3.6"
-  }
+  "productName": "electrand"
 }
