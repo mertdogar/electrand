@@ -7,6 +7,7 @@ import { useAppState } from "@/hooks/use-app-state"
 import { useIpcInvalidation } from "@/hooks/use-ipc-invalidation"
 import { usePreferences } from "@/hooks/use-preferences"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import { CommandPalette } from "@/components/command-palette"
 
 function RootLayout(): React.ReactElement {
   useIpcInvalidation()
@@ -28,6 +29,7 @@ function RootLayout(): React.ReactElement {
           <Outlet />
         </main>
       </SidebarInset>
+      <CommandPalette />
     </SidebarProvider>
   )
 }
