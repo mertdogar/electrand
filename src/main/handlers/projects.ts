@@ -2,7 +2,7 @@ import { ipcMain, BrowserWindow } from "electron"
 import { randomUUID } from "node:crypto"
 import { z } from "zod"
 import { ProjectSchema, type Project } from "@shared/schemas"
-import { scanProjects, writeProject, deleteProjectDir } from "@main/projects"
+import { scanProjects, writeProject, deleteProjectDir, readProject } from "@main/projects"
 
 const CreateInputSchema = z.object({
   name: z.string().min(1),
@@ -44,7 +44,7 @@ export function handleUpdateProject(
   input: unknown
 ): Project {
   const { id, ...updates } = UpdateInputSchema.parse(input)
-  const existing = scanProjects(appMainDirectory).find((p) => p.id === id)
+  const existing = readProject(appMainDirectory, id)
   if (!existing) throw new Error(`Project ${id} not found`)
   const updated = ProjectSchema.parse({
     ...existing,
@@ -63,14 +63,13 @@ export function handleDeleteProject(
   deleteProjectDir(appMainDirectory, id)
 }
 
-function broadcastProjectsChanged(appMainDirectory: string): void {
+function broadcastProjectsChanged(projects: Project[]): void {
   try {
-    const projects = scanProjects(appMainDirectory)
     for (const win of BrowserWindow.getAllWindows()) {
       win.webContents.send("app:projects:changed", projects)
     }
   } catch {
-    // Not running in Electron context (e.g., tests)
+    // Not in Electron context (e.g., tests)
   }
 }
 
@@ -82,16 +81,16 @@ export function registerProjectsHandlers(
   )
   ipcMain.handle("app:projects:create", (_event, input: unknown) => {
     const project = handleCreateProject(getAppMainDirectory(), input)
-    broadcastProjectsChanged(getAppMainDirectory())
+    broadcastProjectsChanged(handleGetProjects(getAppMainDirectory()))
     return project
   })
   ipcMain.handle("app:projects:update", (_event, input: unknown) => {
     const project = handleUpdateProject(getAppMainDirectory(), input)
-    broadcastProjectsChanged(getAppMainDirectory())
+    broadcastProjectsChanged(handleGetProjects(getAppMainDirectory()))
     return project
   })
   ipcMain.handle("app:projects:delete", (_event, input: unknown) => {
     handleDeleteProject(getAppMainDirectory(), input)
-    broadcastProjectsChanged(getAppMainDirectory())
+    broadcastProjectsChanged(handleGetProjects(getAppMainDirectory()))
   })
 }

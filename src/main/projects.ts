@@ -39,3 +39,14 @@ export function deleteProjectDir(appMainDirectory: string, id: string): void {
   const projectDir = path.join(appMainDirectory, id)
   fs.rmSync(projectDir, { recursive: true, force: true })
 }
+
+export function readProject(appMainDirectory: string, id: string): Project | null {
+  const jsonPath = path.join(appMainDirectory, id, "project.json")
+  if (!fs.existsSync(jsonPath)) return null
+  try {
+    const raw = JSON.parse(fs.readFileSync(jsonPath, "utf-8"))
+    return ProjectSchema.parse(raw)
+  } catch {
+    return null
+  }
+}
