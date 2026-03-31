@@ -6,8 +6,6 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
     "sourceMap": true,
     "baseUrl": ".",
     "outDir": "dist",
