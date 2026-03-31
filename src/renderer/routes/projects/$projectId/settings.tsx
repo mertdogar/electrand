@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react"
 import { createFileRoute, useParams, useNavigate } from "@tanstack/react-router"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { useProjects, useUpdateProject, useDeleteProject } from "@/hooks/use-projects"
 import { useSetAppState } from "@/hooks/use-app-state"
 import { PageContent, PageSection, PageTitle } from "@/components/ui/page"
@@ -67,18 +74,16 @@ function ProjectSettings(): React.ReactElement {
       <PageSection title="General">
         <div className="flex flex-col gap-2">
           <label htmlFor="project-name" className="text-sm text-muted-foreground">Name</label>
-          <input
+          <Input
             id="project-name"
-            className="rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
         </div>
         <div className="flex flex-col gap-2">
           <label htmlFor="project-path" className="text-sm text-muted-foreground">Path</label>
-          <input
+          <Input
             id="project-path"
-            className="rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
             value={projectPath}
             onChange={(e) => setProjectPath(e.target.value)}
           />
@@ -88,31 +93,35 @@ function ProjectSettings(): React.ReactElement {
         </Button>
       </PageSection>
 
-      <PageSection className="rounded-md border border-destructive/40 p-4">
-        <h2 className="text-sm font-medium text-destructive">Danger Zone</h2>
-        <p className="text-sm text-muted-foreground">
-          Deleting a project removes its folder and all associated data permanently.
-        </p>
-        {!confirmDelete ? (
-          <Button size="sm" variant="destructive" onClick={() => setConfirmDelete(true)}>
-            Delete project
-          </Button>
-        ) : (
-          <div className="flex gap-2">
-            <Button
-              size="sm"
-              variant="destructive"
-              disabled={deleteProject.isPending}
-              onClick={handleDelete}
-            >
-              {deleteProject.isPending ? "Deleting…" : "Confirm delete"}
+      <Card className="border-destructive/40">
+        <CardHeader>
+          <CardTitle className="text-sm text-destructive">Danger Zone</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-3">
+          <p className="text-sm text-muted-foreground">
+            Deleting a project removes its folder and all associated data permanently.
+          </p>
+          {!confirmDelete ? (
+            <Button size="sm" variant="destructive" onClick={() => setConfirmDelete(true)}>
+              Delete project
             </Button>
-            <Button size="sm" variant="ghost" onClick={() => setConfirmDelete(false)}>
-              Cancel
-            </Button>
-          </div>
-        )}
-      </PageSection>
+          ) : (
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="destructive"
+                disabled={deleteProject.isPending}
+                onClick={handleDelete}
+              >
+                {deleteProject.isPending ? "Deleting…" : "Confirm delete"}
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => setConfirmDelete(false)}>
+                Cancel
+              </Button>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </PageContent>
   )
 }
