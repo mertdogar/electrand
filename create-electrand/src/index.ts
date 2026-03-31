@@ -37,7 +37,6 @@ const main = defineCommand({
         placeholder: "my-app",
         validate(value) {
           if (!value || value.trim().length === 0) return "Project name is required.";
-          if (/[<>:"/\\|?*]/.test(value)) return "Invalid characters in project name.";
         },
       });
       if (isCancel(value)) {
@@ -45,6 +44,12 @@ const main = defineCommand({
         process.exit(0);
       }
       projectName = value;
+    }
+
+    // Validate project name (whether from args or prompt)
+    if (/[<>:"/\\|?*]/.test(projectName)) {
+      cancel("Invalid characters in project name.");
+      process.exit(1);
     }
 
     // 2. Check if directory exists
@@ -63,10 +68,15 @@ const main = defineCommand({
     const s = spinner();
     s.start("Downloading Electrand template...");
 
-    await downloadTemplate("github:mertdogar/electrand", {
-      dir: targetDir,
-      forceClean: true,
-    });
+    try {
+      await downloadTemplate("github:mertdogar/electrand", {
+        dir: targetDir,
+        forceClean: true,
+      });
+    } catch (err) {
+      s.stop("Failed to download template.");
+      process.exit(1);
+    }
 
     s.stop("Template downloaded.");
 
@@ -96,7 +106,12 @@ const main = defineCommand({
 
     if (!isCancel(shouldInstall) && shouldInstall) {
       s.start(`Installing dependencies with ${packageManager}...`);
-      execSync(`${packageManager} install`, { cwd: targetDir, stdio: "ignore" });
+      try {
+        execSync(`${packageManager} install`, { cwd: targetDir, stdio: "ignore" });
+      } catch (err) {
+        s.stop("Failed to install dependencies.");
+        process.exit(1);
+      }
       s.stop("Dependencies installed.");
     }
 
@@ -106,12 +121,18 @@ const main = defineCommand({
     });
 
     if (!isCancel(shouldGitInit) && shouldGitInit) {
-      execSync("git init", { cwd: targetDir, stdio: "ignore" });
-      execSync("git add -A", { cwd: targetDir, stdio: "ignore" });
-      execSync('git commit -m "Initial commit from create-electrand"', {
-        cwd: targetDir,
-        stdio: "ignore",
-      });
+      s.start("Initializing git repository...");
+      try {
+        execSync("git init", { cwd: targetDir, stdio: "ignore" });
+        execSync("git add -A", { cwd: targetDir, stdio: "ignore" });
+        execSync('git commit -m "Initial commit from create-electrand"', {
+          cwd: targetDir,
+          stdio: "ignore",
+        });
+      } catch (err) {
+        s.stop("Failed to initialize git repository.");
+        process.exit(1);
+      }
       s.stop("Git repository initialized.");
     }
 
