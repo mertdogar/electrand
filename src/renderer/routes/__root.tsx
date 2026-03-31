@@ -19,11 +19,6 @@ function RootLayout(): React.ReactElement {
     document.documentElement.classList.toggle("dark", prefs.theme === "dark")
   }, [prefs?.theme])
 
-  useEffect(() => {
-    if (!prefs) return
-    document.documentElement.style.fontSize = `${prefs.fontSize}px`
-  }, [prefs?.fontSize])
-
   return (
     <SidebarProvider>
       {isInProject ? <ProjectSidebar /> : <AppSidebar />}
