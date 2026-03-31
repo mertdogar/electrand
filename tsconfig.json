@@ -5,7 +5,9 @@
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
+    "strict": true,
     "noImplicitAny": true,
+    "strictNullChecks": true,
     "sourceMap": true,
     "baseUrl": ".",
     "outDir": "dist",
@@ -15,7 +17,8 @@
     "paths": {
       "@/*": ["./src/renderer/*"],
       "@main/*": ["./src/main/*"],
-      "@lib/*": ["./src/lib/*"]
+      "@lib/*": ["./src/lib/*"],
+      "@shared/*": ["./src/shared/*"]
     }
   }
 }
