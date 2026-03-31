@@ -123,6 +123,48 @@ The preload script exposes a typed `window.__electrand` object with `invoke` and
 
 ---
 
+## Type Safety
+
+All domain objects are defined as Zod schemas. TypeScript types are derived from schemas via `z.infer<>` — no standalone interfaces for data that crosses IPC boundaries.
+
+### Schemas (live in `src/shared/schemas.ts`, imported by both main and renderer)
+
+```ts
+// src/shared/schemas.ts
+export const ProjectSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string().min(1),
+  path: z.string().min(1),
+})
+export type Project = z.infer<typeof ProjectSchema>
+
+export const PreferencesSchema = z.object({
+  theme: z.enum(['dark', 'light']),
+  fontSize: z.number().int().min(8).max(32),
+})
+export type Preferences = z.infer<typeof PreferencesSchema>
+
+export const AppInfoSchema = z.object({
+  name: z.string(),
+  version: z.string(),
+  versions: z.object({
+    electron: z.string(),
+    node: z.string(),
+    chrome: z.string(),
+  }),
+})
+export type AppInfo = z.infer<typeof AppInfoSchema>
+```
+
+### Rules
+
+- No `any`, `never` (except exhaustiveness checks), or unsafe type casts (`as Foo`) anywhere in the codebase
+- IPC payloads are parsed with `.parse()` on the **receiving** end (main parses renderer input; renderer parses main responses) — if validation fails it throws, which surfaces bugs rather than silently corrupting state
+- The preload bridge's `invoke` and `on` methods are fully typed via a `ElectrandBridge` interface that maps channel names to their payload/return types — no string-indexed loose typing
+- `tsconfig` enforces `"strict": true`, `"noImplicitAny": true`, `"strictNullChecks": true`
+
+---
+
 ## Dependencies to Install
 
 ```
@@ -130,6 +172,7 @@ The preload script exposes a typed `window.__electrand` object with `invoke` and
 @tanstack/router-plugin
 @tanstack/react-query
 @tanstack/react-query-devtools
+zod
 ```
 
 shadcn component to add:
