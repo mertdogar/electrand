@@ -4,7 +4,7 @@
   "description": "Create a new Electrand app",
   "type": "module",
   "bin": {
-    "create-electrand": "./dist/index.mjs"
+    "create-electrand": "./dist/index.js"
   },
   "files": ["dist"],
   "scripts": {
