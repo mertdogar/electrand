@@ -23,12 +23,12 @@ export const AppStateSchema = z.object({
 export type AppState = z.infer<typeof AppStateSchema>
 
 export const AppInfoSchema = z.object({
-  name: z.string(),
-  version: z.string(),
+  name: z.string().min(1),
+  version: z.string().min(1),
   versions: z.object({
-    electron: z.string(),
-    node: z.string(),
-    chrome: z.string(),
+    electron: z.string().min(1),
+    node: z.string().min(1),
+    chrome: z.string().min(1),
   }),
 })
 export type AppInfo = z.infer<typeof AppInfoSchema>

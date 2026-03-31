@@ -65,6 +65,28 @@ describe("PreferencesSchema", () => {
   })
 })
 
+describe("AppInfoSchema", () => {
+  it("parses valid app info", () => {
+    expect(() =>
+      AppInfoSchema.parse({
+        name: "electrand",
+        version: "1.0.0",
+        versions: { electron: "41.1.0", node: "20.0.0", chrome: "120.0.0" },
+      })
+    ).not.toThrow()
+  })
+
+  it("rejects empty name", () => {
+    expect(() =>
+      AppInfoSchema.parse({
+        name: "",
+        version: "1.0.0",
+        versions: { electron: "41.1.0", node: "20.0.0", chrome: "120.0.0" },
+      })
+    ).toThrow()
+  })
+})
+
 describe("AppStateSchema", () => {
   it("accepts null projectId", () => {
     expect(() => AppStateSchema.parse({ projectId: null })).not.toThrow()
