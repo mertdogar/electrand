@@ -73,7 +73,7 @@ const config: ForgeConfig = {
   ],
   hooks: {
     async packageAfterCopy(_forgeConfig, buildPath) {
-      const requiredNativePackages = ["better-sqlite3"]
+      const requiredNativePackages = ["better-sqlite3", "bindings", "file-uri-to-path"]
       const sourceNodeModulesPath = path.resolve(__dirname, "node_modules")
       const destNodeModulesPath = path.resolve(buildPath, "node_modules")
 
