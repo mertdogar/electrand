@@ -6,12 +6,23 @@ import { MakerRpm } from '@electron-forge/maker-rpm';
 import { VitePlugin } from '@electron-forge/plugin-vite';
 import { FusesPlugin } from '@electron-forge/plugin-fuses';
 import { FuseV1Options, FuseVersion } from '@electron/fuses';
+import path from 'node:path';
+import { cp, mkdir } from 'node:fs/promises';
 
 const config: ForgeConfig = {
   packagerConfig: {
-    asar: true,
+    asar: {
+      // Unpack native binaries from the ASAR archive
+      unpack: '*.{node,dylib}',
+      unpackDir: '{better-sqlite3}',
+    },
   },
-  rebuildConfig: {},
+  rebuildConfig: {
+    onlyModules: ['better-sqlite3'],
+    force: true,
+    platform: process.platform,
+    buildFromSource: true,
+  },
   makers: [
     new MakerSquirrel({}),
     new MakerZIP({}, ['darwin']),
@@ -20,11 +31,8 @@ const config: ForgeConfig = {
   ],
   plugins: [
     new VitePlugin({
-      // `build` can specify multiple entry builds, which can be Main process, Preload scripts, Worker process, etc.
-      // If you are familiar with Vite configuration, it will look really familiar.
       build: [
         {
-          // `entry` is just an alias for `build.lib.entry` in the corresponding file of `config`.
           entry: 'src/main/main.ts',
           config: 'vite.main.config.ts',
           target: 'main',
@@ -42,8 +50,6 @@ const config: ForgeConfig = {
         },
       ],
     }),
-    // Fuses are used to enable/disable various Electron functionality
-    // at package time, before code signing the application
     new FusesPlugin({
       version: FuseVersion.V1,
       [FuseV1Options.RunAsNode]: false,
@@ -54,6 +60,22 @@ const config: ForgeConfig = {
       [FuseV1Options.OnlyLoadAppFromAsar]: true,
     }),
   ],
+  hooks: {
+    async packageAfterCopy(_forgeConfig, buildPath) {
+      const requiredNativePackages = ['better-sqlite3'];
+      const sourceNodeModulesPath = path.resolve(__dirname, 'node_modules');
+      const destNodeModulesPath = path.resolve(buildPath, 'node_modules');
+
+      await Promise.all(
+        requiredNativePackages.map(async (packageName) => {
+          const sourcePath = path.join(sourceNodeModulesPath, packageName);
+          const destPath = path.join(destNodeModulesPath, packageName);
+          await mkdir(path.dirname(destPath), { recursive: true });
+          await cp(sourcePath, destPath, { recursive: true, preserveTimestamps: true });
+        })
+      );
+    },
+  },
 };
 
 export default config;
