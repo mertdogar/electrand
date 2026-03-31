@@ -22,9 +22,9 @@ function RootLayout(): React.ReactElement {
 
   return (
     <SidebarProvider>
+      <Titlebar />
       {isInProject ? <ProjectSidebar /> : <AppSidebar />}
       <SidebarInset>
-        <Titlebar />
         <main className="flex-1 overflow-auto">
           <Outlet />
         </main>

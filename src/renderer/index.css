@@ -130,4 +130,13 @@
     min-height: 100vh;
     max-width: 100vw;
   }
+
+  /* Offset sidebar and content below the fixed titlebar (h-10 = 2.5rem) */
+  [data-slot="sidebar-container"] {
+    top: 2.5rem !important;
+    height: calc(100svh - 2.5rem) !important;
+  }
+  [data-slot="sidebar-inset"] {
+    padding-top: 2.5rem;
+  }
 }

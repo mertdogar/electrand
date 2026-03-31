@@ -26,7 +26,7 @@ export function Titlebar(): React.ReactElement {
 
   return (
     <header
-      className="relative flex h-10 shrink-0 items-center border-b px-2"
+      className="fixed top-0 left-0 right-0 z-50 flex h-10 items-center border-b bg-background px-2"
       style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
     >
       {/* Left zone */}
@@ -35,7 +35,7 @@ export function Titlebar(): React.ReactElement {
         style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
       >
         {!isDarwin && <WindowControls minimize={minimize} maximizeToggle={maximizeToggle} close={close} />}
-        <SidebarTrigger />
+        <SidebarTrigger className={isDarwin ? "ml-[68px]" : ""} />
         <Separator orientation="vertical" className="h-4" />
       </div>
 
