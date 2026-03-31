@@ -103,19 +103,53 @@ Uses shadcn `ResizablePanelGroup` (direction: horizontal):
 
 ---
 
+## File System Layout
+
+```
+~/.local/{appName}/              ← appMainDirectory (default)
+├── preferences.json             ← Preferences (always at this fixed bootstrap path)
+├── {project-uuid}/
+│   └── project.json             ← Project
+└── {project-uuid}/
+    └── project.json
+```
+
+**Bootstrap note:** `preferences.json` always lives at `~/.local/{appName}/preferences.json` — this path is fixed and never moves, so the app can always find it. The `appMainDirectory` preference controls where **project folders** are stored. By default it equals `~/.local/{appName}`, but if changed by the user, new projects are created under the new path on next launch. Data migration is out of scope.
+
+---
+
+## Boot Sequence
+
+Runs entirely in the main process before the window is ready to receive IPC calls:
+
+1. Resolve bootstrap path: `~/.local/{appName}/` — create if missing
+2. Read `preferences.json` → `PreferencesSchema.parse()` — write defaults if missing or invalid
+3. Read `preferences.appMainDirectory` — create if missing
+4. Scan `appMainDirectory` for subdirectories containing `project.json`
+5. For each: `ProjectSchema.safeParse()` — valid entries are loaded into memory; invalid ones are logged and skipped (no crash)
+6. State is ready in memory; window is created
+7. Renderer IPC calls are served from in-memory state; mutations write through to disk
+
+---
+
 ## IPC Contract
 
 ### Channels (main process handlers)
 
-| Channel | Direction | Payload |
-|---|---|---|
-| `app:preferences:get` | renderer → main | — |
-| `app:preferences:set` | renderer → main | `Partial<Preferences>` |
-| `app:preferences:changed` | main → renderer | `Preferences` |
-| `app:projects:get` | renderer → main | — |
-| `app:projects:set` | renderer → main | `Project[]` |
-| `app:projects:changed` | main → renderer | `Project[]` |
-| `app:info:get` | renderer → main | — |
+| Channel | Direction | Payload | Returns |
+|---|---|---|---|
+| `app:preferences:get` | renderer → main | — | `Preferences` |
+| `app:preferences:set` | renderer → main | `Partial<Preferences>` | `Preferences` |
+| `app:preferences:changed` | main → renderer (push) | `Preferences` | — |
+| `app:projects:get` | renderer → main | — | `Project[]` |
+| `app:projects:create` | renderer → main | `Omit<Project, 'id' \| 'createdAt' \| 'updatedAt' \| 'lastOpenedAt'>` | `Project` |
+| `app:projects:update` | renderer → main | `Pick<Project, 'id'> & Partial<Omit<Project, 'id' \| 'createdAt'>>` | `Project` |
+| `app:projects:delete` | renderer → main | `{ id: string }` | `void` |
+| `app:projects:changed` | main → renderer (push) | `Project[]` | — |
+| `app:info:get` | renderer → main | — | `AppInfo` |
+
+`create` assigns `id` (uuid), `createdAt`, `updatedAt`, and `lastOpenedAt: null` in main.
+`update` always sets `updatedAt` to the current timestamp in main.
 
 ### Preload bridge
 
@@ -134,13 +168,17 @@ All domain objects are defined as Zod schemas. TypeScript types are derived from
 export const ProjectSchema = z.object({
   id: z.string().uuid(),
   name: z.string().min(1),
-  path: z.string().min(1),
+  path: z.string().min(1),            // user-facing project path (workspace root, etc.)
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+  lastOpenedAt: z.string().datetime().nullable(),
 })
 export type Project = z.infer<typeof ProjectSchema>
 
 export const PreferencesSchema = z.object({
   theme: z.enum(['dark', 'light']),
   fontSize: z.number().int().min(8).max(32),
+  appMainDirectory: z.string().min(1), // default: ~/.local/{appName}
 })
 export type Preferences = z.infer<typeof PreferencesSchema>
 
@@ -154,6 +192,16 @@ export const AppInfoSchema = z.object({
   }),
 })
 export type AppInfo = z.infer<typeof AppInfoSchema>
+```
+
+### Default values (computed at runtime in main)
+
+```ts
+const DEFAULT_PREFERENCES: Preferences = {
+  theme: 'dark',
+  fontSize: 14,
+  appMainDirectory: path.join(os.homedir(), '.local', app.getName()),
+}
 ```
 
 ### Rules
