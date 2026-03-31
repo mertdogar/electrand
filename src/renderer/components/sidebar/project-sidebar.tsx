@@ -39,7 +39,7 @@ export function ProjectSidebar(): React.ReactElement | null {
 
   return (
     <Sidebar>
-      <SidebarHeader>
+      <SidebarHeader className="pt-8">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>

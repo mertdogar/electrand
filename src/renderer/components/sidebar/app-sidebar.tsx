@@ -23,7 +23,7 @@ export function AppSidebar(): React.ReactElement {
 
   return (
     <Sidebar>
-      <SidebarHeader>
+      <SidebarHeader className="pt-8">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>

@@ -26,27 +26,30 @@ export function Titlebar(): React.ReactElement {
 
   return (
     <header
-      className="flex h-10 shrink-0 items-center border-b px-2"
+      className="relative flex h-10 shrink-0 items-center border-b px-2"
       style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
     >
       {/* Left zone */}
       <div
-        className="flex items-center gap-1"
+        className="relative z-10 flex items-center gap-1"
         style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
       >
         {!isDarwin && <WindowControls minimize={minimize} maximizeToggle={maximizeToggle} close={close} />}
-        <SidebarTrigger className={isDarwin ? "ml-[70px]" : ""} />
+        <SidebarTrigger />
         <Separator orientation="vertical" className="h-4" />
       </div>
 
-      {/* Center zone */}
-      <div className="flex-1 text-center text-sm font-medium select-none">
+      {/* Center zone — absolutely centered */}
+      <div className="absolute inset-x-0 text-center text-sm font-medium select-none pointer-events-none">
         {centerTitle}
       </div>
 
+      {/* Spacer */}
+      <div className="flex-1" />
+
       {/* Right zone */}
       <div
-        className="flex items-center"
+        className="relative z-10 flex items-center"
         style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
       >
         <Button
