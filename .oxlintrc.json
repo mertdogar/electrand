@@ -4,6 +4,9 @@
     "typescript",
     "import"
   ],
+  "ignorePatterns": [
+    "src/renderer/routeTree.gen.ts"
+  ],
   "categories": {
     "correctness": "off"
   },
