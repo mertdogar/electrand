@@ -5,18 +5,24 @@ import { Button } from "@/components/ui/button"
 import { useSetAppState } from "@/hooks/use-app-state"
 import { useProjects } from "@/hooks/use-projects"
 
-export function ProjectSidebar(): React.ReactElement {
-  const { projectId } = useParams({ strict: false }) as { projectId?: string }
+export function ProjectSidebar(): React.ReactElement | null {
+  const params = useParams({ strict: false }) as { projectId?: string }
+  const projectId = params.projectId
   const { data: projects } = useProjects()
   const setAppState = useSetAppState()
   const navigate = useNavigate()
+
+  if (!projectId) return null
 
   const project = projects?.find((p) => p.id === projectId)
 
   const handleClose = (): void => {
     setAppState.mutate(
       { projectId: null },
-      { onSuccess: () => void navigate({ to: "/" }) }
+      {
+        onSuccess: () => void navigate({ to: "/" }),
+        onError: (err) => console.error("Failed to close project:", err),
+      }
     )
   }
 
@@ -29,7 +35,7 @@ export function ProjectSidebar(): React.ReactElement {
       )}
       <Link
         to="/projects/$projectId"
-        params={{ projectId: projectId ?? "" }}
+        params={{ projectId }}
         className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent [&.active]:bg-accent [&.active]:font-medium"
       >
         <LayoutDashboard className="h-4 w-4 shrink-0" />
@@ -37,7 +43,7 @@ export function ProjectSidebar(): React.ReactElement {
       </Link>
       <Link
         to="/projects/$projectId/settings"
-        params={{ projectId: projectId ?? "" }}
+        params={{ projectId }}
         className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent [&.active]:bg-accent [&.active]:font-medium"
       >
         <Settings className="h-4 w-4 shrink-0" />

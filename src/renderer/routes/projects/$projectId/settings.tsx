@@ -35,7 +35,10 @@ function ProjectSettings(): React.ReactElement {
   const isDirty = name !== project.name || projectPath !== project.path
 
   const handleSave = (): void => {
-    updateProject.mutate({ id: projectId, name, path: projectPath })
+    updateProject.mutate(
+      { id: projectId, name, path: projectPath },
+      { onError: (err) => console.error("Failed to save project:", err) }
+    )
   }
 
   const handleDelete = (): void => {
@@ -45,9 +48,13 @@ function ProjectSettings(): React.ReactElement {
         onSuccess: () => {
           setAppState.mutate(
             { projectId: null },
-            { onSuccess: () => void navigate({ to: "/" }) }
+            {
+              onSuccess: () => void navigate({ to: "/" }),
+              onError: (err) => console.error("Failed to clear active project:", err),
+            }
           )
         },
+        onError: (err) => console.error("Failed to delete project:", err),
       }
     )
   }
@@ -59,16 +66,18 @@ function ProjectSettings(): React.ReactElement {
       <section className="flex flex-col gap-3">
         <h2 className="text-sm font-medium">General</h2>
         <div className="flex flex-col gap-2">
-          <label className="text-sm text-muted-foreground">Name</label>
+          <label htmlFor="project-name" className="text-sm text-muted-foreground">Name</label>
           <input
+            id="project-name"
             className="rounded-md border bg-background px-3 py-2 text-sm"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
         </div>
         <div className="flex flex-col gap-2">
-          <label className="text-sm text-muted-foreground">Path</label>
+          <label htmlFor="project-path" className="text-sm text-muted-foreground">Path</label>
           <input
+            id="project-path"
             className="rounded-md border bg-background px-3 py-2 text-sm"
             value={projectPath}
             onChange={(e) => setProjectPath(e.target.value)}

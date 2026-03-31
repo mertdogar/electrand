@@ -128,7 +128,10 @@ function HomeScreen(): React.ReactElement {
   const handleOpenProject = (id: string): void => {
     setAppState.mutate(
       { projectId: id },
-      { onSuccess: () => void navigate({ to: "/projects/$projectId", params: { projectId: id } }) }
+      {
+        onSuccess: () => void navigate({ to: "/projects/$projectId", params: { projectId: id } }),
+        onError: (err) => console.error("Failed to open project:", err),
+      }
     )
   }
 
