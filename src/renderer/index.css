@@ -63,6 +63,7 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
 }
 
 .dark {
@@ -94,153 +95,25 @@
   --sidebar-ring: oklch(0.439 0 0);
 }
 
-* {
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+}
+/* * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   border-color: var(--border);
-}
+} */
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     Helvetica, Arial, sans-serif;
   background: var(--background);
   color: var(--foreground);
-}
-
-.app {
-  min-height: 100vh;
-  padding: 2rem;
-  max-width: 640px;
-  margin: 0 auto;
-  transition: background 0.2s, color 0.2s;
-}
-
-h1 {
-  margin-bottom: 1.5rem;
-}
-
-h2 {
-  margin-bottom: 0.75rem;
-  font-size: 1.1rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  opacity: 0.6;
-}
-
-section {
-  margin-bottom: 2rem;
-}
-
-/* ─── Controls ──────────────────────────────────────────────── */
-
-.controls {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.control-row {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-
-button {
-  padding: 0.4rem 0.8rem;
-  border: 1px solid currentColor;
-  border-radius: 6px;
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
-  font-size: inherit;
-  opacity: 0.8;
-  transition: opacity 0.15s;
-}
-
-button:hover {
-  opacity: 1;
-}
-
-/* ─── Add project form ──────────────────────────────────────── */
-
-.add-project {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.add-project input {
-  flex: 1;
-  padding: 0.4rem 0.6rem;
-  border: 1px solid currentColor;
-  border-radius: 6px;
-  background: transparent;
-  color: inherit;
-  font-size: inherit;
-  opacity: 0.7;
-}
-
-.add-project input:focus {
-  outline: none;
-  opacity: 1;
-}
-
-/* ─── Project list ──────────────────────────────────────────── */
-
-.project-list {
-  list-style: none;
-}
-
-.project-list li {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.6rem 0.8rem;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.dark .project-list li:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.light .project-list li:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
-
-.project-list li.active {
-  border-left: 3px solid #89b4fa;
-}
-
-.dark .project-list li.active {
-  background: rgba(137, 180, 250, 0.1);
-}
-
-.light .project-list li.active {
-  background: rgba(30, 102, 245, 0.08);
-}
-
-.project-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
-
-.project-info .path {
-  font-size: 0.8em;
-  opacity: 0.5;
-}
-
-.remove {
-  border: none;
-  font-size: 1.2em;
-  padding: 0.2rem 0.5rem;
-}
-
-.empty {
-  opacity: 0.4;
-  font-style: italic;
 }

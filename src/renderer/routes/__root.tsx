@@ -7,9 +7,16 @@ import {
 } from "@/components/ui/resizable"
 import { Topbar } from "@/components/topbar"
 import { AppSidebar } from "@/components/sidebar/app-sidebar"
+// import { AppSidebar } from "@/components/app-sidebar"
 import { ProjectSidebar } from "@/components/sidebar/project-sidebar"
 import { useAppState } from "@/hooks/use-app-state"
 import { useIpcInvalidation } from "@/hooks/use-ipc-invalidation"
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
+
 
 function RootLayout(): React.ReactElement {
   useIpcInvalidation()
@@ -17,12 +24,15 @@ function RootLayout(): React.ReactElement {
   const isInProject = appState?.projectId != null
 
   return (
-    <ResizablePanelGroup direction="horizontal" className="h-screen w-screen">
-      <ResizablePanel defaultSize={20} minSize={15} maxSize={30}>
+      <SidebarProvider className="h-screen w-screen">
+    <ResizablePanelGroup orientation="horizontal" className="h-screen w-screen">
+      <ResizablePanel defaultSize="20" maxSize="20" minSize="10">
+        <div className="flex h-full flex-col relative">
         {isInProject ? <ProjectSidebar /> : <AppSidebar />}
+        </div>
       </ResizablePanel>
       <ResizableHandle withHandle />
-      <ResizablePanel defaultSize={80}>
+      <ResizablePanel>
         <div className="flex h-full flex-col">
           <Topbar />
           <main className="flex-1 overflow-auto p-4">
@@ -31,6 +41,7 @@ function RootLayout(): React.ReactElement {
         </div>
       </ResizablePanel>
     </ResizablePanelGroup>
+    </SidebarProvider>
   )
 }
 

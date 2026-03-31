@@ -22,12 +22,12 @@ function AboutScreen(): React.ReactElement {
   ]
 
   return (
-    <div className="flex max-w-sm flex-col gap-6">
+    <div className="flex max-w-sm flex-col gap-6 p-4">
       <h1 className="text-xl font-semibold">{info.name}</h1>
       <table className="w-full text-sm">
         <tbody>
           {rows.map(([label, value]) => (
-            <tr key={label} className="border-b last:border-0">
+            <tr key={label} className="last:border-0">
               <td className="py-2 text-muted-foreground">{label}</td>
               <td className="py-2 text-right font-mono">{value}</td>
             </tr>
