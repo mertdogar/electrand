@@ -106,7 +106,7 @@ function NewProjectForm({
             onChange={(e) => setProjectPath(e.target.value)}
           />
         </CardContent>
-        <CardFooter className="gap-2">
+        <CardFooter className="gap-2 mt-4">
           <Button type="submit" disabled={!name.trim() || createProject.isPending}>
             Create
           </Button>
