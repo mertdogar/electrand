@@ -25,6 +25,7 @@ export type AppState = z.infer<typeof AppStateSchema>
 export const AppInfoSchema = z.object({
   name: z.string().min(1),
   version: z.string().min(1),
+  platform: z.string().min(1),
   versions: z.object({
     electron: z.string().min(1),
     node: z.string().min(1),

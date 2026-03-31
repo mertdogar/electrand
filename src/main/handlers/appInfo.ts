@@ -5,6 +5,7 @@ export function getAppInfo(): AppInfo {
   return AppInfoSchema.parse({
     name: app.getName(),
     version: app.getVersion(),
+    platform: process.platform,
     versions: {
       electron: process.versions.electron,
       node: process.versions.node,
