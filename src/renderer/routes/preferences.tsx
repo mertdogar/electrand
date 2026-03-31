@@ -1,8 +1,10 @@
 import React from "react"
 import { createFileRoute } from "@tanstack/react-router"
+import { FolderOpen } from "lucide-react"
 import { usePreferences, useSetPreferences } from "@/hooks/use-preferences"
 import { PageContent, PageSection, PageTitle } from "@/components/ui/page"
 import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 
 export const Route = createFileRoute("/preferences")({
   component: PreferencesScreen,
@@ -60,9 +62,23 @@ function PreferencesScreen(): React.ReactElement {
 
       <PageSection title="Storage">
         <Card>
-          <CardContent className="py-3">
-            <p className="text-sm font-medium">App data directory</p>
-            <p className="mt-1 break-all text-xs text-muted-foreground">{prefs.appMainDirectory}</p>
+          <CardContent className="flex items-center justify-between py-3">
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium">App data directory</p>
+              <p className="mt-1 break-all text-xs text-muted-foreground">{prefs.appMainDirectory}</p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="ml-4 shrink-0"
+              onClick={async () => {
+                const dir = await window.__electrand.invoke("app:dialog:select-directory")
+                if (dir) setPrefs.mutate({ appMainDirectory: dir })
+              }}
+            >
+              <FolderOpen className="mr-2 h-4 w-4" />
+              Change
+            </Button>
           </CardContent>
         </Card>
       </PageSection>

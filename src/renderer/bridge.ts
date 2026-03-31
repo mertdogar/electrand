@@ -13,6 +13,7 @@ export interface InvokePayloads {
   "app:window:minimize": void
   "app:window:maximize-toggle": void
   "app:window:close": void
+  "app:dialog:select-directory": void
 }
 
 export interface InvokeReturns {
@@ -28,6 +29,7 @@ export interface InvokeReturns {
   "app:window:minimize": void
   "app:window:maximize-toggle": void
   "app:window:close": void
+  "app:dialog:select-directory": string | null
 }
 
 export interface PushPayloads {
