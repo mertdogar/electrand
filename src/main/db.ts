@@ -77,8 +77,11 @@ export function cleanStaleAppState(db: Database.Database): void {
   for (const { pid } of rows) {
     try {
       process.kill(pid, 0)
-    } catch {
-      db.prepare("DELETE FROM app_state WHERE pid = ?").run(pid)
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code === "ESRCH") {
+        db.prepare("DELETE FROM app_state WHERE pid = ?").run(pid)
+      }
+      // EPERM means the process exists but is not owned by us — leave the row
     }
   }
 }

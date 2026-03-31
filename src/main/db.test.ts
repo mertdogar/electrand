@@ -7,6 +7,7 @@ import {
   setPreferences,
   getAppState,
   setAppState,
+  initAppState,
 } from "./db"
 import type { Preferences, AppState } from "@shared/schemas"
 
@@ -73,6 +74,16 @@ describe("appState", () => {
     setAppState(db, 111, { projectId: uuid })
     const state = getAppState(db, 222)
     expect(state.projectId).toBeNull()
+  })
+})
+
+describe("initAppState", () => {
+  it("resets existing non-null state to null", () => {
+    const db = makeDb()
+    const uuid = "123e4567-e89b-12d3-a456-426614174000"
+    setAppState(db, 12345, { projectId: uuid })
+    initAppState(db, 12345)
+    expect(getAppState(db, 12345).projectId).toBeNull()
   })
 })
 
