@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 import { createRootRoute, Outlet } from "@tanstack/react-router"
-import { Topbar } from "@/components/topbar"
+import { Titlebar } from "@/components/titlebar"
 import { AppSidebar } from "@/components/sidebar/app-sidebar"
 import { ProjectSidebar } from "@/components/sidebar/project-sidebar"
 import { useAppState } from "@/hooks/use-app-state"
@@ -24,7 +24,7 @@ function RootLayout(): React.ReactElement {
     <SidebarProvider>
       {isInProject ? <ProjectSidebar /> : <AppSidebar />}
       <SidebarInset>
-        <Topbar />
+        <Titlebar />
         <main className="flex-1 overflow-auto">
           <Outlet />
         </main>
