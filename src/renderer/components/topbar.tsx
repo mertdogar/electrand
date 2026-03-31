@@ -1,5 +1,7 @@
 import React from "react"
 import { useRouterState } from "@tanstack/react-router"
+import { Separator } from "@/components/ui/separator"
+import { SidebarTrigger } from "@/components/ui/sidebar"
 
 export function Topbar(): React.ReactElement {
   const matches = useRouterState({ select: (s) => s.matches })
@@ -9,7 +11,9 @@ export function Topbar(): React.ReactElement {
   const label = (title?.staticData as { title?: string })?.title ?? ""
 
   return (
-    <header className="flex h-10 shrink-0 items-center border-b px-4">
+    <header className="flex h-12 shrink-0 items-center gap-2 border-b px-4">
+      <SidebarTrigger className="-ml-1" />
+      <Separator orientation="vertical" className="h-4" />
       <span className="text-sm font-medium">{label}</span>
     </header>
   )

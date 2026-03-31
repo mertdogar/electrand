@@ -1,7 +1,17 @@
 import React from "react"
-import { Link, useNavigate, useParams } from "@tanstack/react-router"
-import { LayoutDashboard, Settings, X } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Link, useNavigate, useParams, useRouterState } from "@tanstack/react-router"
+import { FolderOpen, X } from "lucide-react"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
+} from "@/components/ui/sidebar"
 import { useSetAppState } from "@/hooks/use-app-state"
 import { useProjects } from "@/hooks/use-projects"
 
@@ -11,6 +21,7 @@ export function ProjectSidebar(): React.ReactElement | null {
   const { data: projects } = useProjects()
   const setAppState = useSetAppState()
   const navigate = useNavigate()
+  const pathname = useRouterState({ select: (s) => s.location.pathname })
 
   if (!projectId) return null
 
@@ -27,39 +38,64 @@ export function ProjectSidebar(): React.ReactElement | null {
   }
 
   return (
-    <nav className="flex h-full flex-col gap-1 p-2">
-      {project && (
-        <p className="truncate px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-          {project.name}
-        </p>
-      )}
-      <Link
-        to="/projects/$projectId"
-        params={{ projectId }}
-        className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent [&.active]:bg-accent [&.active]:font-medium"
-      >
-        <LayoutDashboard className="h-4 w-4 shrink-0" />
-        Overview
-      </Link>
-      <Link
-        to="/projects/$projectId/settings"
-        params={{ projectId }}
-        className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent [&.active]:bg-accent [&.active]:font-medium"
-      >
-        <Settings className="h-4 w-4 shrink-0" />
-        Settings
-      </Link>
-      <div className="mt-auto">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="w-full justify-start gap-2"
-          onClick={handleClose}
-        >
-          <X className="h-4 w-4" />
-          Close Project
-        </Button>
-      </div>
-    </nav>
+    <Sidebar>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg" asChild>
+              <a href="#">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  <FolderOpen className="size-4" />
+                </div>
+                <div className="flex flex-col gap-0.5 leading-none overflow-hidden">
+                  <span className="font-semibold truncate">{project?.name ?? "Project"}</span>
+                  <span className="text-xs text-muted-foreground">Project</span>
+                </div>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname === `/projects/${projectId}`}
+              >
+                <Link to="/projects/$projectId" params={{ projectId }}>
+                  Overview
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname === `/projects/${projectId}/settings`}
+              >
+                <Link to="/projects/$projectId/settings" params={{ projectId }}>
+                  Settings
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarContent>
+
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton onClick={handleClose}>
+              <X className="size-4" />
+              Close Project
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+
+      <SidebarRail />
+    </Sidebar>
   )
 }

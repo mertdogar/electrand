@@ -1,26 +1,61 @@
 import React from "react"
-import { Link } from "@tanstack/react-router"
-import { Home, Settings, Info } from "lucide-react"
+import { Link, useRouterState } from "@tanstack/react-router"
+import { Layers } from "lucide-react"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
+} from "@/components/ui/sidebar"
 
 const NAV_ITEMS = [
-  { to: "/", label: "Home", icon: Home },
-  { to: "/preferences", label: "Preferences", icon: Settings },
-  { to: "/about", label: "About", icon: Info },
+  { to: "/", label: "Home" },
+  { to: "/preferences", label: "Preferences" },
+  { to: "/about", label: "About" },
 ] as const
 
 export function AppSidebar(): React.ReactElement {
+  const pathname = useRouterState({ select: (s) => s.location.pathname })
+
   return (
-    <nav className="flex h-full flex-col gap-1 p-2">
-      {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
-        <Link
-          key={to}
-          to={to}
-          className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent [&.active]:bg-accent [&.active]:font-medium"
-        >
-          <Icon className="h-4 w-4 shrink-0" />
-          {label}
-        </Link>
-      ))}
-    </nav>
+    <Sidebar>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg" asChild>
+              <a href="#">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  <Layers className="size-4" />
+                </div>
+                <div className="flex flex-col gap-0.5 leading-none">
+                  <span className="font-semibold">Electrand</span>
+                  <span className="text-xs text-muted-foreground">v1.0.0</span>
+                </div>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarMenu>
+            {NAV_ITEMS.map(({ to, label }) => (
+              <SidebarMenuItem key={to}>
+                <SidebarMenuButton asChild isActive={pathname === to}>
+                  <Link to={to}>{label}</Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarContent>
+
+      <SidebarRail />
+    </Sidebar>
   )
 }

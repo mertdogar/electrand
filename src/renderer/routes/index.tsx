@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { useProjects, useCreateProject } from "@/hooks/use-projects"
 import { useSetAppState } from "@/hooks/use-app-state"
+import { PageContent, PageTitle } from "@/components/ui/page"
 import type { Project } from "@shared/schemas"
 
 export const Route = createFileRoute("/")({
@@ -136,15 +137,15 @@ function HomeScreen(): React.ReactElement {
   }
 
   if (isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading projects…</p>
+    return <p className="text-sm text-muted-foreground p-6">Loading…</p>
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <PageContent>
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Projects</h1>
+        <PageTitle>Projects</PageTitle>
         <Button size="sm" onClick={() => setShowForm(true)} disabled={showForm}>
-          <Plus className="mr-2 h-4 w-4" />
+          <Plus className="mr-1.5 h-4 w-4" />
           New Project
         </Button>
       </div>
@@ -152,8 +153,8 @@ function HomeScreen(): React.ReactElement {
       {showForm && <NewProjectForm onCancel={() => setShowForm(false)} />}
 
       {!projects?.length && !showForm ? (
-        <div className="flex flex-col items-center gap-3 py-16 text-muted-foreground">
-          <FolderOpen className="h-10 w-10" />
+        <div className="flex flex-col items-center gap-3 py-20 text-muted-foreground">
+          <FolderOpen className="h-10 w-10 opacity-40" />
           <p className="text-sm">No projects yet.</p>
           <Button variant="outline" size="sm" onClick={() => setShowForm(true)}>
             Create your first project
@@ -166,6 +167,6 @@ function HomeScreen(): React.ReactElement {
           ))}
         </div>
       )}
-    </div>
+    </PageContent>
   )
 }

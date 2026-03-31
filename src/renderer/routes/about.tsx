@@ -1,6 +1,7 @@
 import React from "react"
 import { createFileRoute } from "@tanstack/react-router"
 import { useAppInfo } from "@/hooks/use-app-info"
+import { PageContent, PageMeta, PageTitle } from "@/components/ui/page"
 
 export const Route = createFileRoute("/about")({
   component: AboutScreen,
@@ -11,7 +12,7 @@ function AboutScreen(): React.ReactElement {
   const { data: info, isLoading } = useAppInfo()
 
   if (isLoading || !info) {
-    return <p className="text-sm text-muted-foreground">Loading…</p>
+    return <p className="text-sm text-muted-foreground p-6">Loading…</p>
   }
 
   const rows: [string, string][] = [
@@ -22,18 +23,9 @@ function AboutScreen(): React.ReactElement {
   ]
 
   return (
-    <div className="flex max-w-sm flex-col gap-6 p-4">
-      <h1 className="text-xl font-semibold">{info.name}</h1>
-      <table className="w-full text-sm">
-        <tbody>
-          {rows.map(([label, value]) => (
-            <tr key={label} className="last:border-0">
-              <td className="py-2 text-muted-foreground">{label}</td>
-              <td className="py-2 text-right font-mono">{value}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <PageContent narrow>
+      <PageTitle>{info.name}</PageTitle>
+      <PageMeta rows={rows} />
+    </PageContent>
   )
 }

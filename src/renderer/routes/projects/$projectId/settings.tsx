@@ -3,6 +3,7 @@ import { createFileRoute, useParams, useNavigate } from "@tanstack/react-router"
 import { Button } from "@/components/ui/button"
 import { useProjects, useUpdateProject, useDeleteProject } from "@/hooks/use-projects"
 import { useSetAppState } from "@/hooks/use-app-state"
+import { PageContent, PageSection, PageTitle } from "@/components/ui/page"
 
 export const Route = createFileRoute("/projects/$projectId/settings")({
   component: ProjectSettings,
@@ -30,7 +31,7 @@ function ProjectSettings(): React.ReactElement {
     }
   }, [project?.id])
 
-  if (!project) return <p className="text-sm text-muted-foreground">Loading…</p>
+  if (!project) return <p className="text-sm text-muted-foreground p-6">Loading…</p>
 
   const isDirty = name !== project.name || projectPath !== project.path
 
@@ -60,16 +61,15 @@ function ProjectSettings(): React.ReactElement {
   }
 
   return (
-    <div className="flex max-w-md flex-col gap-8">
-      <h1 className="text-xl font-semibold">Project Settings</h1>
+    <PageContent narrow>
+      <PageTitle>Project Settings</PageTitle>
 
-      <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-medium">General</h2>
+      <PageSection title="General">
         <div className="flex flex-col gap-2">
           <label htmlFor="project-name" className="text-sm text-muted-foreground">Name</label>
           <input
             id="project-name"
-            className="rounded-md border bg-background px-3 py-2 text-sm"
+            className="rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
@@ -78,31 +78,23 @@ function ProjectSettings(): React.ReactElement {
           <label htmlFor="project-path" className="text-sm text-muted-foreground">Path</label>
           <input
             id="project-path"
-            className="rounded-md border bg-background px-3 py-2 text-sm"
+            className="rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
             value={projectPath}
             onChange={(e) => setProjectPath(e.target.value)}
           />
         </div>
-        <Button
-          size="sm"
-          disabled={!isDirty || updateProject.isPending}
-          onClick={handleSave}
-        >
+        <Button size="sm" disabled={!isDirty || updateProject.isPending} onClick={handleSave}>
           {updateProject.isPending ? "Saving…" : "Save changes"}
         </Button>
-      </section>
+      </PageSection>
 
-      <section className="flex flex-col gap-3 rounded-md border border-destructive/40 p-4">
+      <PageSection className="rounded-md border border-destructive/40 p-4">
         <h2 className="text-sm font-medium text-destructive">Danger Zone</h2>
         <p className="text-sm text-muted-foreground">
           Deleting a project removes its folder and all associated data permanently.
         </p>
         {!confirmDelete ? (
-          <Button
-            size="sm"
-            variant="destructive"
-            onClick={() => setConfirmDelete(true)}
-          >
+          <Button size="sm" variant="destructive" onClick={() => setConfirmDelete(true)}>
             Delete project
           </Button>
         ) : (
@@ -115,16 +107,12 @@ function ProjectSettings(): React.ReactElement {
             >
               {deleteProject.isPending ? "Deleting…" : "Confirm delete"}
             </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => setConfirmDelete(false)}
-            >
+            <Button size="sm" variant="ghost" onClick={() => setConfirmDelete(false)}>
               Cancel
             </Button>
           </div>
         )}
-      </section>
-    </div>
+      </PageSection>
+    </PageContent>
   )
 }
