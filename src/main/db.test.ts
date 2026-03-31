@@ -9,7 +9,7 @@ import {
   setAppState,
   initAppState,
 } from "./db"
-import type { Preferences, AppState } from "@shared/schemas"
+import type { Preferences } from "@shared/schemas"
 
 const DEFAULT_PREFS: Preferences = {
   theme: "dark",
