@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { useProjects, useCreateProject } from "@/hooks/use-projects"
 import { useSetAppState } from "@/hooks/use-app-state"
 import { PageContent, PageTitle } from "@/components/ui/page"
@@ -44,7 +45,7 @@ function ProjectCard({
 }): React.ReactElement {
   return (
     <Card
-      className="cursor-pointer transition-colors hover:bg-accent"
+      className="cursor-pointer transition-shadow hover:shadow-md"
       onClick={() => onOpen(project.id)}
     >
       <CardHeader>
@@ -93,15 +94,13 @@ function NewProjectForm({
           <CardTitle>New Project</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
-          <input
-            className="rounded-md border bg-background px-3 py-2 text-sm"
+          <Input
             placeholder="Project name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             autoFocus
           />
-          <input
-            className="rounded-md border bg-background px-3 py-2 text-sm"
+          <Input
             placeholder="Path (optional)"
             value={projectPath}
             onChange={(e) => setProjectPath(e.target.value)}
