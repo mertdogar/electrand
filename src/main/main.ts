@@ -3,12 +3,9 @@ import path from "node:path"
 import os from "node:os"
 import fs from "node:fs"
 import started from "electron-squirrel-startup"
+import { createIPCHandler } from "electron-trpc-experimental/main"
 import { openDb, cleanStaleAppState, initAppState, getPreferences, setPreferences } from "./db"
-import { registerPreferencesHandlers } from "./handlers/preferences"
-import { registerProjectsHandlers } from "./handlers/projects"
-import { registerAppStateHandlers } from "./handlers/appState"
-import { registerAppInfoHandlers } from "./handlers/appInfo"
-import { registerWindowHandlers } from "./handlers/window"
+import { createAppRouter } from "./router"
 import type { Preferences } from "@shared/schemas"
 
 if (started) app.quit()
@@ -67,7 +64,6 @@ app.on("ready", () => {
   const defaults = resolveDefaultPreferences()
   const preferences = getPreferences(db, defaults)
   if (preferences === defaults) {
-    // First launch — persist defaults
     setPreferences(db, defaults, defaults)
   }
 
@@ -77,15 +73,13 @@ app.on("ready", () => {
   // 6. Register a fresh app_state row for this process
   initAppState(db, process.pid)
 
-  // 7. Register all IPC handlers
-  registerPreferencesHandlers(db, defaults)
-  registerProjectsHandlers(() => getPreferences(db, defaults).appMainDirectory)
-  registerAppStateHandlers(db, () => getPreferences(db, defaults).appMainDirectory)
-  registerAppInfoHandlers()
-
-  // 8. Create the window
+  // 7. Create the window
   const mainWindow = createWindow()
-  registerWindowHandlers(mainWindow)
+
+  // 8. Create tRPC router and attach IPC handler
+  const getAppMainDirectory = () => getPreferences(db, defaults).appMainDirectory
+  const appRouter = createAppRouter({ db, defaults, mainWindow, getAppMainDirectory })
+  createIPCHandler({ router: appRouter, windows: [mainWindow] })
 })
 
 app.on("window-all-closed", () => {
