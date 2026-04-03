@@ -1,0 +1,11 @@
+{
+  "name": "electrand-monorepo",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter electrand start",
+    "build": "pnpm --filter electrand package",
+    "lint": "pnpm -r lint",
+    "format": "pnpm -r format"
+  },
+  "packageManager": "pnpm@10.12.1"
+}
