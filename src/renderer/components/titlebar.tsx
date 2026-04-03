@@ -4,16 +4,15 @@ import { Settings, Minus, Square, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
-import { useAppInfo } from "@/hooks/use-app-info"
-import { useAppState } from "@/hooks/use-app-state"
-import { useProjects } from "@/hooks/use-projects"
-import { useWindowControls } from "@/hooks/use-window-controls"
+import { trpc } from "@/trpc"
 
 export function Titlebar(): React.ReactElement {
-  const { data: appInfo } = useAppInfo()
-  const { data: appState } = useAppState()
-  const { data: projects } = useProjects()
-  const { minimize, maximizeToggle, close } = useWindowControls()
+  const { data: appInfo } = trpc.appInfo.get.useQuery()
+  const { data: appState } = trpc.appState.get.useQuery()
+  const { data: projects } = trpc.projects.list.useQuery()
+  const minimize = trpc.window.minimize.useMutation()
+  const maximizeToggle = trpc.window.maximizeToggle.useMutation()
+  const close = trpc.window.close.useMutation()
   const navigate = useNavigate()
 
   const platform = appInfo?.platform ?? ""
@@ -34,7 +33,13 @@ export function Titlebar(): React.ReactElement {
         className="relative z-10 flex items-center gap-1"
         style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
       >
-        {!isDarwin && <WindowControls minimize={minimize} maximizeToggle={maximizeToggle} close={close} />}
+        {!isDarwin && (
+          <WindowControls
+            minimize={() => minimize.mutate()}
+            maximizeToggle={() => maximizeToggle.mutate()}
+            close={() => close.mutate()}
+          />
+        )}
         <SidebarTrigger className={isDarwin ? "ml-[68px]" : ""} />
         <Separator orientation="vertical" className="h-4" />
       </div>

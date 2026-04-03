@@ -12,14 +12,13 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { useSetAppState } from "@/hooks/use-app-state"
-import { useProjects } from "@/hooks/use-projects"
+import { trpc } from "@/trpc"
 
 export function ProjectSidebar(): React.ReactElement | null {
   const params = useParams({ strict: false }) as { projectId?: string }
   const projectId = params.projectId
-  const { data: projects } = useProjects()
-  const setAppState = useSetAppState()
+  const { data: projects } = trpc.projects.list.useQuery()
+  const setAppState = trpc.appState.set.useMutation()
   const navigate = useNavigate()
   const pathname = useRouterState({ select: (s) => s.location.pathname })
 

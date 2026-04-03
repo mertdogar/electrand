@@ -10,17 +10,15 @@ import {
   CommandList,
   CommandShortcut,
 } from "@/components/ui/command"
-import { useProjects } from "@/hooks/use-projects"
-import { usePreferences, useSetPreferences } from "@/hooks/use-preferences"
-import { useSetAppState } from "@/hooks/use-app-state"
+import { trpc } from "@/trpc"
 
 export function CommandPalette(): React.ReactElement {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
-  const { data: projects } = useProjects()
-  const { data: prefs } = usePreferences()
-  const setPrefs = useSetPreferences()
-  const setAppState = useSetAppState()
+  const { data: projects } = trpc.projects.list.useQuery()
+  const { data: prefs } = trpc.preferences.get.useQuery()
+  const setPrefs = trpc.preferences.set.useMutation()
+  const setAppState = trpc.appState.set.useMutation()
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
