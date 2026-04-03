@@ -1,20 +1,19 @@
 import React, { useEffect } from "react"
 import { createFileRoute, Outlet, useParams } from "@tanstack/react-router"
-import { useSetAppState } from "@/hooks/use-app-state"
-import { useProjects } from "@/hooks/use-projects"
+import { trpc } from "@/trpc"
 
 function ProjectLayout(): React.ReactElement {
   const { projectId } = useParams({ from: "/projects/$projectId" })
-  const { mutate: setAppStateMutate } = useSetAppState()
-  const { data: projects } = useProjects()
+  const setAppState = trpc.appState.set.useMutation()
+  const { data: projects } = trpc.projects.list.useQuery()
   const project = projects?.find((p) => p.id === projectId)
 
   useEffect(() => {
-    setAppStateMutate(
+    setAppState.mutate(
       { projectId },
       { onError: (err) => console.error("Failed to set active project:", err) },
     )
-  }, [projectId, setAppStateMutate])
+  }, [projectId])
 
   if (!project) {
     return <p className="text-sm text-muted-foreground">Project not found.</p>

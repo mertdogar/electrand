@@ -1,7 +1,7 @@
 import React from "react"
 import { createFileRoute } from "@tanstack/react-router"
 import { FolderOpen } from "lucide-react"
-import { usePreferences, useSetPreferences } from "@/hooks/use-preferences"
+import { trpc } from "@/trpc"
 import { PageContent, PageSection, PageTitle } from "@/components/ui/page"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -12,8 +12,9 @@ export const Route = createFileRoute("/preferences")({
 })
 
 function PreferencesScreen(): React.ReactElement {
-  const { data: prefs, isLoading } = usePreferences()
-  const setPrefs = useSetPreferences()
+  const { data: prefs, isLoading } = trpc.preferences.get.useQuery()
+  const setPrefs = trpc.preferences.set.useMutation()
+  const selectDirectory = trpc.window.selectDirectory.useMutation()
 
   if (isLoading || !prefs) {
     return <p className="text-sm text-muted-foreground p-6">Loading…</p>
@@ -72,7 +73,7 @@ function PreferencesScreen(): React.ReactElement {
               size="sm"
               className="ml-4 shrink-0"
               onClick={async () => {
-                const dir = await window.__electrand.invoke("app:dialog:select-directory")
+                const dir = await selectDirectory.mutateAsync()
                 if (dir) setPrefs.mutate({ appMainDirectory: dir })
               }}
             >

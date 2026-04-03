@@ -1,6 +1,6 @@
 import React from "react"
 import { createFileRoute, useParams } from "@tanstack/react-router"
-import { useProjects } from "@/hooks/use-projects"
+import { trpc } from "@/trpc"
 import { PageContent, PageMeta, PageTitle } from "@/components/ui/page"
 
 export const Route = createFileRoute("/projects/$projectId/")({
@@ -17,7 +17,7 @@ function formatDate(iso: string): string {
 
 function ProjectOverview(): React.ReactElement {
   const { projectId } = useParams({ from: "/projects/$projectId/" })
-  const { data: projects } = useProjects()
+  const { data: projects } = trpc.projects.list.useQuery()
   const project = projects?.find((p) => p.id === projectId)
 
   if (!project) return <p className="text-sm text-muted-foreground p-6">Loading…</p>

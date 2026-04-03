@@ -11,8 +11,7 @@ import {
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useProjects, useCreateProject } from "@/hooks/use-projects"
-import { useSetAppState } from "@/hooks/use-app-state"
+import { trpc } from "@/trpc"
 import { PageContent, PageTitle } from "@/components/ui/page"
 import type { Project } from "@shared/schemas"
 
@@ -68,7 +67,7 @@ function ProjectCard({
 function NewProjectForm({ onCancel }: { onCancel: () => void }): React.ReactElement {
   const [name, setName] = useState("")
   const [projectPath, setProjectPath] = useState("")
-  const createProject = useCreateProject()
+  const createProject = trpc.projects.create.useMutation()
 
   const handleSubmit = (e: React.FormEvent): void => {
     e.preventDefault()
@@ -112,8 +111,8 @@ function NewProjectForm({ onCancel }: { onCancel: () => void }): React.ReactElem
 }
 
 function HomeScreen(): React.ReactElement {
-  const { data: projects, isLoading } = useProjects()
-  const setAppState = useSetAppState()
+  const { data: projects, isLoading } = trpc.projects.list.useQuery()
+  const setAppState = trpc.appState.set.useMutation()
   const navigate = useNavigate()
   const [showForm, setShowForm] = useState(false)
 

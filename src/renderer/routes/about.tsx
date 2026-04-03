@@ -1,6 +1,6 @@
 import React from "react"
 import { createFileRoute } from "@tanstack/react-router"
-import { useAppInfo } from "@/hooks/use-app-info"
+import { trpc } from "@/trpc"
 import { PageContent, PageMeta, PageTitle } from "@/components/ui/page"
 
 export const Route = createFileRoute("/about")({
@@ -9,7 +9,7 @@ export const Route = createFileRoute("/about")({
 })
 
 function AboutScreen(): React.ReactElement {
-  const { data: info, isLoading } = useAppInfo()
+  const { data: info, isLoading } = trpc.appInfo.get.useQuery()
 
   if (isLoading || !info) {
     return <p className="text-sm text-muted-foreground p-6">Loading…</p>

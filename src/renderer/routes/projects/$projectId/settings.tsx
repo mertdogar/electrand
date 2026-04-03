@@ -3,8 +3,7 @@ import { createFileRoute, useParams, useNavigate } from "@tanstack/react-router"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { useProjects, useUpdateProject, useDeleteProject } from "@/hooks/use-projects"
-import { useSetAppState } from "@/hooks/use-app-state"
+import { trpc } from "@/trpc"
 import { PageContent, PageSection, PageTitle } from "@/components/ui/page"
 
 export const Route = createFileRoute("/projects/$projectId/settings")({
@@ -14,12 +13,12 @@ export const Route = createFileRoute("/projects/$projectId/settings")({
 
 function ProjectSettings(): React.ReactElement {
   const { projectId } = useParams({ from: "/projects/$projectId/settings" })
-  const { data: projects } = useProjects()
+  const { data: projects } = trpc.projects.list.useQuery()
   const project = projects?.find((p) => p.id === projectId)
 
-  const updateProject = useUpdateProject()
-  const deleteProject = useDeleteProject()
-  const setAppState = useSetAppState()
+  const updateProject = trpc.projects.update.useMutation()
+  const deleteProject = trpc.projects.delete.useMutation()
+  const setAppState = trpc.appState.set.useMutation()
   const navigate = useNavigate()
 
   const [name, setName] = useState(project?.name ?? "")
