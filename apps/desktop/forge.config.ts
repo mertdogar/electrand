@@ -11,7 +11,7 @@ import { cp, mkdir } from "node:fs/promises"
 
 const config: ForgeConfig = {
   packagerConfig: {
-    icon: path.resolve(__dirname, "resources", "icon"),
+    icon: path.resolve(__dirname, "../../resources", "icon"),
     asar: {
       // Unpack native binaries from the ASAR archive
       unpack: "*.{node,dylib}",
@@ -26,17 +26,17 @@ const config: ForgeConfig = {
   },
   makers: [
     new MakerSquirrel({
-      setupIcon: path.resolve(__dirname, "resources", "icon.ico"),
+      setupIcon: path.resolve(__dirname, "../../resources", "icon.ico"),
     }),
     new MakerZIP({}, ["darwin"]),
     new MakerRpm({
       options: {
-        icon: path.resolve(__dirname, "resources", "icon.png"),
+        icon: path.resolve(__dirname, "../../resources", "icon.png"),
       },
     }),
     new MakerDeb({
       options: {
-        icon: path.resolve(__dirname, "resources", "icon.png"),
+        icon: path.resolve(__dirname, "../../resources", "icon.png"),
       },
     }),
   ],
