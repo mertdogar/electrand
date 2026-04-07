@@ -28,34 +28,55 @@ A modern desktop application for managing projects, built with Electron and Reac
 | **Build** | Vite 8 |
 | **Quality** | oxlint, oxfmt, Vitest |
 
-## Getting Started
+## Quick Start
+
+Scaffold a new Electrand app with `create-electrand`:
+
+```bash
+# with pnpm
+pnpm create electrand my-app
+
+# with npx
+npx create-electrand@latest my-app
+
+# with pnpx
+pnpx create-electrand@latest my-app
+
+cd my-app
+pnpm install
+pnpm start
+```
+
+That's it -- the app window should open with the project ready to hack on.
+
+## Getting Started (from source)
 
 ### Prerequisites
 
 - Node.js (LTS recommended)
-- npm
+- [pnpm](https://pnpm.io)
 
 ### Install & Run
 
 ```bash
-npm install
-npm start
+pnpm install
+pnpm start
 ```
 
 ### Build
 
 ```bash
-npm run make       # Create distributable packages
-npm run package    # Create unpacked app directory
+pnpm make       # Create distributable packages
+pnpm package    # Create unpacked app directory
 ```
 
 ### Code Quality
 
 ```bash
-npm run lint           # Lint with oxlint
-npm run format         # Format with oxfmt
-npm run format:check   # Check formatting
-npm test               # Run tests
+pnpm lint           # Lint with oxlint
+pnpm format         # Format with oxfmt
+pnpm format:check   # Check formatting
+pnpm test           # Run tests
 ```
 
 ## Project Structure
